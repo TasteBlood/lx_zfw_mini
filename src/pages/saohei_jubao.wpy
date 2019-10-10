@@ -1,0 +1,541 @@
+<style lang="less" scoped>
+.container {
+  padding-bottom: 40rpx;
+}
+
+radio-group {
+  padding: 20rpx;
+  background-color: #ebebeb;
+}
+.input-line {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 25rpx;
+  border-bottom: 1rpx solid #e1e1e1;
+}
+
+.label {
+  color: #515151;
+}
+
+.content-area {
+  border: 1rpx solid #e1e1e1;
+  background-color: #f1f1f1;
+  padding: 10rpx;
+  border-radius: 10rpx;
+  width: 96%;
+  height: 250rpx;
+}
+
+.btn-record {
+  width: 90%;
+  height: 80rpx;
+  text-align: center;
+  line-height: 80rpx;
+  background-color: #f39800;
+  border-radius: 10rpx;
+  color: white;
+  position: relative;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0 auto;
+  margin-top: 10rpx;
+}
+
+.btn-record:active {
+  background-color: rgb(228, 145, 3);
+}
+
+.btn-submit {
+  width: 90%;
+  height: 80rpx;
+  text-align: center;
+  line-height: 80rpx;
+  background-color: #2f23d1;
+  border-radius: 10rpx;
+  color: white;
+  position: relative;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0 auto;
+  margin-top: 10rpx;
+}
+
+.btn-submit:active {
+  background-color: rgb(41, 31, 180);
+}
+
+.record-panel {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: tow;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.play-panel {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: tow;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+@keyframes Fade{
+  from{
+    box-shadow: 0rpx 0rpx 8rpx 4rpx #f1f1f1;
+  }
+
+  to{
+    box-shadow: 0rpx 0rpx 20rpx 4rpx #f1f1f1;
+  }
+}
+
+.stop-btn{
+  width: 150rpx;
+  height: 150rpx;
+  text-align: center;
+  line-height: 150rpx;
+  background-color: #f39800;
+  color: white;
+  border-radius: 50%;
+  box-shadow: 0rpx 0rpx 8rpx 4rpx #f1f1f1;
+  animation: Fade 1s infinite linear alternate;
+}
+.not-null{
+  color:#ff0000;
+}
+</style>
+<template>
+  <view class="container">
+    <radio-group
+      style="display:flex;display-direction:row;justify-content:center;"
+      @change="onChange"
+    >
+      <radio checked="true" color="#2F23D1" value="1">匿名举报</radio>
+      <radio style="margin-left:100rpx" color="#2F23D1" value="2">实名举报</radio>
+    </radio-group>
+    <view class="pass-extra" wx:if="{{passType===2}}">
+      <view class="input-line">
+        <view class="label"><text class="not-null">*</text>举报人姓名:</view>
+        <input style="width:65%;margin-left:10rpx;" placeholder="请输入真实姓名" @input='onInput' data-type='username' />
+      </view>
+      <view class="input-line">
+        <view class="label">
+          <text class="not-null">*</text>
+          <text>举报人电话:</text>
+        </view>
+        <input style="width:65%;margin-left:10rpx;" placeholder="请输入有效联系方式" @input='onInput' data-type='mobile' />
+      </view>
+      <view class="input-line">
+        <view class="label"><text class="not-null">*</text>身份证号:</view>
+        <input style="width:70%;margin-left:10rpx;" placeholder="请输入居民身份证号" @input='onInput' data-type='idCard' />
+      </view>
+    </view>
+    <view class="input-line" @tap="onLocationClick">
+      <view class="label"><text class="not-null">*</text>事件地点:</view>
+      <view style="width:68%;margin-left:10rpx;" class="mutli-line">{{address?address:'请选择地点'}}</view>
+      <image src="../res/ic_next.png" class="icon-36"></image>
+    </view>
+    <view class="input-line">
+      <text class="label">详细地址:</text>
+      <input style="width:75%;margin-left:10rpx;" placeholder="请输入详细地址" @input='onInput' data-type='addressDetail' />
+    </view>
+    <view class="input-line">
+      <text class="label"><text class="not-null">*</text>发生时间:</text>
+      <picker mode="date" style="width:68%;margin-left:10rpx;" @change="onDateChange">
+        <view>{{date}}</view>
+      </picker>
+      <image src="../res/ic_calendar.png" class="icon-36"></image>
+    </view>
+    <view class="input-line">
+      <text class="label"><text class="not-null">*</text>我举报谁:</text>
+      <input style="width:72%;margin-left:10rpx;" placeholder="请输入举报人员或单位" @input='onInput' data-type='reportPerson' />
+    </view>
+    <view style="padding:25rpx;box-sizing:border-box;">
+      <text class="label"><text class="not-null">*</text>我举报什么事:</text>
+      <textarea placeholder="请说明事情详情(至少30字)" style="margin-top:10rpx;" class="content-area" @input='onInput' data-type='reportWhat'></textarea>
+    </view>
+    <view style="padding:25rpx;box-sizing:border-box;">
+      <text class="label">语音留言(最多10分钟):</text>
+      <view class="btn-record" @tap="startRecordClick" @longpress="onClearClick">{{audioPath?'点击播放':'点击开始录音'}}</view>
+      <text
+        style="color:#717171;font-size:30rpx;margin-left:40rpx;margin-top:20rpx;"
+      >(录制完成点击播放，长按清除)</text>
+    </view>
+    <view style="padding:25rpx;box-sizing:border-box;">
+      <text class="label">我的要求:</text>
+      <textarea placeholder="有什么要求或者想要得到什么结果" style="margin-top:10rpx;" class="content-area" @input='onInput' data-type='reportRequire'></textarea>
+    </view>
+    <view style="padding:10rpx 25rpx 10rpx 25rpx;box-sizing:border-box;">
+      <text class="label">附件上传(最多9张):</text>
+    </view>
+    <imagePicker @onImageChoose.user="onImageChoose" @onItemClick.user="onItemClick" />
+    <bigImage :show.sync="showBig" @onClose.user="onClose" :url.sync="url" />
+    <view class="btn-submit" style="margin-top:40rpx;" @tap='submit'>提交举报</view>
+    <!-- record panel-->
+    <cover-view class="record-panel" wx:if="{{showRecord}}">
+      <cover-view style="padding:40rpx;border-radius:10rpx;background-color:white;width:80%;">
+        <cover-view
+          style="padding:20rpx;display:flex;flex-direction:row;justify-content:space-between;"
+        >
+          <cover-view>总：10 分</cover-view>
+          <cover-view>剩：{{reduceTime}}</cover-view>
+        </cover-view>
+        <cover-view class="btn-record" style="margin-top:20rpx;" @tap="stopRecordClick">停止录制</cover-view>
+      </cover-view>
+    </cover-view>
+
+    <!-- playing panel -->
+    <cover-view class="play-panel" wx:if="{{showPlay}}">
+      <cover-view class="stop-btn" @tap='stopPlay'>关 闭</cover-view>
+    </cover-view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+import ImagePicker from '../components/imagePicker';
+import BigImage from '../components/bigImage';
+import { UploadSingle, UploadMulti } from '../utils/uploader';
+import {addAccusation} from '../utils/api';
+const QQMapSDK = require('../utils/qqmap-wx-jssdk.min.js');
+let qqMap = null;
+let recordManager = wx.getRecorderManager();
+let audioPlayer = wx.createInnerAudioContext();
+export default class SaoHeiJuBao extends wepy.page {
+  config = {
+    navigationBarTitleText: '兰州市扫黑除恶举报',
+    navigationBarTextStyle: 'white',
+    navigationBarBackgroundColor: '#2F23D1',
+    disableScroll: false
+  };
+  components = {
+    imagePicker: ImagePicker,
+    bigImage: BigImage
+  };
+  data = {
+    showBig: false,
+    url: null,
+    showRecord: false,
+    showPlay:false,
+    reduceTime: '10 分 00 秒',
+    
+
+    //business variable
+    passType: 1,
+    address: '',
+    addressDetail:'',
+    date: '',
+    reportPerson:'',
+    reportWhat:'',
+    reportRequire:'',
+    audioPath:'',
+    pics:[],
+    username:'',
+    idCard:'',
+    mobile:''
+
+
+  };
+  methods = {
+    onImageChoose(e) {
+      //console.log(e);
+      this.pics = e;
+    },
+    onItemClick(e) {
+      console.log('click', e);
+      this.showBig = true;
+      this.url = e;
+      this.$apply();
+    },
+    onDateChange(e) {
+      console.log(e);
+      this.date = e.detail.value;
+    },
+    onClose() {
+      this.showBig = false;
+    },
+    onChange(e) {
+      //console.log(e);
+      this.passType = Number.parseInt(e.detail.value);
+    },
+    onClearClick(){
+      if(this.audioPath){
+        this.audioPath = '';
+        this.$apply();
+        wepy.showToast({
+          title: '已删除', //提示的内容,
+          icon: 'success', //图标,
+          duration: 2000, //延迟时间,
+          mask: true, //显示透明蒙层，防止触摸穿透,
+        });
+        
+      }
+    },
+    onLocationClick() {
+      wepy.navigateTo({ url: './location' });
+    },
+    stopRecordClick() {
+      //console.log('record stop...')
+      this.showRecord = false;
+      recordManager.stop();
+    },
+    stopPlay(){
+      this.showPlay = false;
+      audioPlayer.stop();
+    },
+    startRecordClick() {
+      if(this.audioPath){
+        //开始播放
+        console.log('playing...');
+        this.showPlay = true;
+        audioPlayer.src = this.audioPath;
+        audioPlayer.loop = true;
+        audioPlayer.autoplay = true;
+        audioPlayer.play();
+        return;
+      }
+      //console.log('record start...')
+      recordManager.start({
+        format: 'mp3'
+      });
+      wepy.showLoading({
+        title: '录音准备中', //提示的内容,
+        mask: true, //显示透明蒙层，防止触摸穿透,
+        success: res => {}
+      });
+      
+    },
+    onInput(e){
+      switch(e.currentTarget.dataset.type){
+        case 'addressDetail':
+          this.addressDetail = e.detail.value;
+          break;
+        case 'reportPerson':
+          this.reportPerson = e.detail.value;
+          break;
+        case 'reportWhat':
+          this.reportWhat = e.detail.value;
+          break;
+        case 'reportRequire':
+          this.reportRequire = e.detail.value;
+          break;
+        case 'username':
+          this.username = e.detail.value;
+          break;
+        case 'idCard':
+          this.idCard = e.detail.value;
+          break;
+        case 'mobile':
+          this.mobile = e.detail.value;
+          break;
+      }
+    },
+    submit(){
+      if(!this.reportPerson)return;
+      if(!this.address)return;
+      if(!this.date)return;
+      if(!this.reportWhat)return;
+      if(this.reportWhat.length<30){
+        wx.showToast({
+          title: '不少于30字',
+          icon: 'none'
+        })
+        return;
+      }
+      if(this.passType===2){
+        if(!this.username)return;
+        if(!this.idCard)return;
+        if(!this.mobile)return;
+        var reg = /(^\d{15}$)|(^\d{17}(\d|X)$)/;
+        if(reg.test(this.idCard) === false)
+        {
+            wx.showToast({
+              title: '身份证号错误',
+              icon: 'none'
+            })
+            return false;
+        }
+        var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
+        if(!myreg.test(this.mobile)) 
+        { 
+            wx.showToast({
+              title: '手机号错误',
+              icon: 'none'
+            })
+            return false; 
+        } 
+      }
+      // 上传图片
+      let images = [];
+      for(let i=0;i<this.pics.length;i++){
+        images.push(this.pics[i].url);
+      }
+      let self = this;
+      UploadMulti(images,
+      async (res)=>{
+        let user = wx.getStorageSync('login_user');
+        res = await addAccusation(user.id,self.address,self.addressDetail,self.date,self.reportPerson,self.reportWhat,
+        self.reportRequire,self.audioPath,res.join(';'),self.username,self.idCard,self.mobile,self.passType);
+        if(res.status===1){
+          wx.showToast({
+            title: '举报成功',
+            icon: 'none'
+          })
+          setTimeout(() => {
+            wepy.navigateBack({
+              delta: 1 //返回的页面数，如果 delta 大于现有页面数，则返回到首页,
+            });
+          }, 500);
+        }
+      },
+      (err)=>{
+
+      });
+    }
+  };
+
+  initRecord() {
+    let self = this;
+    recordManager.onStart(() => {
+      this.showRecord = true;
+      this.$apply();
+      wepy.hideLoading();
+      console.log('record start....');
+      self.startTimer();
+    });
+
+    recordManager.onFrameRecorded(res => {
+      console.log('on recording...', res);
+    });
+
+    recordManager.onStop(res => {
+      console.log('record stop...');
+      console.log(res);
+      (self.reduceTime = '10 分 00 秒'), self.stopTimer();
+      self.$apply();
+
+      //录制完成，在这里上传录音文件
+      UploadSingle(
+        res.tempFilePath,
+        res => {
+          //console.log(res);
+          self.audioPath = res;
+          self.$apply();
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    });
+  }
+
+  startTimer() {
+    let self = this;
+    let time = 60 * 10;
+    this.timerId = setInterval(() => {
+      console.log('count down once...');
+      time--;
+      self.reduceTime = self.formatTime(time);
+      self.$apply();
+      if (time <= 0) {
+        self.showRecord = false;
+        self.$apply();
+        recordManager.stop();
+      }
+    }, 1000);
+  }
+
+  stopTimer() {
+    clearInterval(this.timerId);
+  }
+
+  formatTime(time) {
+    if (time / 60 === 0) {
+      return '0 分 ' + (time % 60 < 10 ? `0${time % 60}` : time % 60) + ' 秒';
+    } else {
+      return (
+        Number.parseInt(time / 60) +
+        ' 分 ' +
+        (time % 60 < 10 ? `0${time % 60}` : time % 60) +
+        ' 秒'
+      );
+    }
+  }
+
+  onLoad() {
+    this.initRecord();
+    //扩展Date函数处理日期
+    Date.prototype.format = function() {
+      let year = this.getFullYear();
+      let month = this.getMonth() + 1;
+      let day = this.getDate();
+      return (
+        year +
+        '-' +
+        (month >= 10 ? month : `0${month}`) +
+        '-' +
+        (day >= 10 ? day : `0${day}`)
+      );
+    };
+
+    qqMap = new QQMapSDK({
+      key: '6GWBZ-R3MWU-E72VP-BFPNG-TSFMO-CCBB2'
+    });
+
+    this.date = new Date().format();
+    if (!this.address) {
+      //开始定位加反地理编码
+      let self = this;
+      wx.getLocation({
+        type: 'gcj02',
+        success: function(res) {
+          var latitude = res.latitude;
+          var longitude = res.longitude;
+          qqMap.reverseGeocoder({
+            location: location,
+            sig: 'uRpgvFWuquCfkU1VLDMgUikmkYbpSGS',
+            success: res => {
+              //console.log(res);
+              self.address = res.result.address;
+              self.$apply();
+            },
+            complete: function() {
+              wepy.hideLoading();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  onShow() {
+    let location = wx.getStorageSync('location');
+    if (location) {
+      this.address = location;
+      wx.removeStorageSync('location');
+    }
+  }
+
+  onUnLoad(){
+    audioPlayer.destroy();
+  }
+}
+</script>

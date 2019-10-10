@@ -1,0 +1,120 @@
+<style lang="less" scoped>
+    .container{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left:0;
+        top:0;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .bg{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left:0;
+        top:0;
+        z-index: -1;
+    }
+
+    .title{
+        position: absolute;
+        top:23rpx;
+        left:30rpx;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size: 34rpx;
+    }
+
+    .menu{
+        width: 50%;
+        height: 90rpx;
+        text-align: center;
+        line-height: 90rpx;
+        background-color: #DB241F;
+        margin-bottom: 80rpx;
+        color: white;
+        font-size: 38rpx;
+        font-weight: bold;
+        box-shadow: 0rpx 4rpx 10rpx 4rpx rgba(0, 0, 0, 0.3);
+    }
+
+    .menu:active{
+        box-shadow: 0rpx 4rpx 10rpx 4rpx rgba(0, 0, 0, 0.4);
+    }
+
+    .top-index{
+        position: fixed;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+    }
+</style>
+<template>
+    <view class="container">
+        <image src='http://qn-zfw.yungoux.com/1570585392773.png' class="bg" mode='asceptFill'></image>
+        <view class="title" style="margin-top:{{top}}px">
+            <image src='../res/back.png' class="icon-36" mode='asceptFill' @tap='back'></image>
+            <text style="margin-left:20rpx">兰州市扫黑除恶平台</text>
+        </view>
+        <view class="menu" @tap='skipTo' data-type='shuofa'>
+            以案说法
+        </view>
+        <view class="menu" @tap='skipTo' data-type='xianchang'>
+            庭审现场
+        </view>
+        <view class="menu" @tap='skipTo' data-type='zhishi'>
+            扫黑除恶知识点
+        </view>
+        <view class="menu" @tap='skipTo' data-type='jubao'>
+            举 报
+        </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class SaoHeiIndex extends wepy.page{
+    config = {
+        navigationStyle:'custom',
+        disableScroll:true
+    };
+
+    data = {
+        top:0,
+    };
+
+    methods = {
+        back(){
+            wepy.navigateBack({
+              delta: 1 //返回的页面数，如果 delta 大于现有页面数，则返回到首页,
+            });
+            
+        },
+        skipTo(e){
+            switch(e.currentTarget.dataset.type){
+                case 'shuofa':break;
+                case 'xianchang':break;
+                case 'zhishi':break;
+                case 'jubao':
+                    wx.navigateTo({
+                        url: './saohei_confirm'
+                    })
+                    break;
+            }
+        }
+    };
+
+    onLoad(){
+        wepy.getSystemInfo({ success: res => {
+            this.top = res.statusBarHeight
+        } });
+        
+    }
+}
+</script>

@@ -1,0 +1,192 @@
+<style lang="less" scoped>
+.container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: scroll;
+}
+
+.swiper {
+  height: 400rpx;
+}
+
+.title {
+  position: absolute;
+  color: white;
+  left: 20rpx;
+  top: 23rpx;
+  z-index: 2;
+  font-size: 36rpx;
+}
+
+.top-menu {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 20rpx;
+}
+
+.menu-left {
+  color: #db221f;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.menu-right {
+  color: #3cae34;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.menu-panel {
+  margin-left: 60rpx;
+  margin-right: 60rpx;
+}
+
+.menu-line {
+  background-color: white;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10rpx;
+  box-sizing: border-box;
+}
+.menu-line:active {
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
+}
+
+.pic {
+  width: 60%;
+  height: 130rpx;
+}
+.content {
+  width: 40%;
+  text-align: center;
+  color: #2f23d1;
+  font-size: 34rpx;
+  font-weight: bold;
+}
+</style>
+<template>
+  <view class="container">
+    <swiper indicator-dots autoplay circular class="swiper">
+      <block wx:for="{{items}}" wx:key="{{index}}">
+        <swiper-item>
+          <image mode="aspectFill" src="{{item.src}}" style="width:100%;height:100%;" />
+        </swiper-item>
+      </block>
+    </swiper>
+    <view class="title" style="margin-top:{{top}}px;">兰州政法委小程序</view>
+    <view class="top-menu">
+      <view class="menu-left" @tap="skipTo" data-type="score">
+        <image class="icon-36" src="../res/ic_score.png" mode="asceptFill" />
+        <text style="margin-left:10rpx">签到领积分</text>
+      </view>
+      <view class="menu-right" @tap="skipTo" data-type="wechat">
+        <image class="icon-36" src="../res/ic_wechat_link.png" mode="asceptFill" />
+        <text style="margin-left:10rpx">微信链接</text>
+      </view>
+    </view>
+    <view class="menu-panel">
+      <view class="menu-line" style="margin-bottom:{{bottom}}px">
+        <view class="content">政策法规</view>
+        <image src="http://qn-zfw.yungoux.com/1570585283440.png" mode="asceptFill" class="pic" />
+      </view>
+      <view class="menu-line" style="margin-bottom:{{bottom}}px"> 
+        <view class="content">市域治理</view>
+        <image src="http://qn-zfw.yungoux.com/1570585258778.png" mode="asceptFill" class="pic" />
+      </view>
+      <view class="menu-line" style="margin-bottom:{{bottom}}px">
+        <view class="content">维护稳定</view>
+        <image src="http://qn-zfw.yungoux.com/1570585626267.png" mode="asceptFill" class="pic" />
+      </view>
+      <view class="menu-line" style="margin-bottom:{{bottom}}px">
+        <view class="content">反邪防邪</view>
+        <image src="http://qn-zfw.yungoux.com/1570585206689.png" mode="asceptFill" class="pic" />
+      </view>
+      <view class="menu-line" style="margin-bottom:{{bottom}}px" @tap="skipTo" data-type="saohei">
+        <view class="content">扫黑除恶</view>
+        <image src="http://qn-zfw.yungoux.com/1570585235103.png" mode="asceptFill" class="pic" />
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: '兰州政法',
+    navigationStyle: 'custom',
+    navigationBarTextStyle: 'white',
+    disableScroll: true
+  };
+  components = {};
+  data = {
+    top: 0,
+    items: [
+      {
+        src: 'http://qn-zfw.yungoux.com/1570585161520.png'
+      },
+      {
+        src: 'http://qn-zfw.yungoux.com/1570584896547.png'
+      },
+      {
+        src: 'http://qn-zfw.yungoux.com/1570585119124.png'
+      }
+    ],
+    bottom:0
+  };
+  methods = {
+    skipTo(e) {
+      switch (e.currentTarget.dataset.type) {
+        case 'score':
+          wepy.navigateTo({ url: './score_note' });
+          break;
+        case 'wechat':
+          break;
+        case 'saohei':
+          wepy.navigateTo({ url: './saohei_index' });
+          break;
+      }
+    }
+  };
+  events = {};
+  onLoad() {
+    wepy.getSystemInfo({
+      success: res => {
+        //console.log(res);
+        this.top = res.statusBarHeight;
+
+
+        wx.createSelectorQuery().select('.swiper').boundingClientRect().exec(swiperRes=>{
+      //console.log(swiperRes[0].height,'swiper');
+      wx.createSelectorQuery().select('.top-menu').boundingClientRect().exec(topRes=>{
+        //console.log(topRes[0].height,'top');
+        
+        wx.createSelectorQuery().select('.menu-line').boundingClientRect().exec(lineRes=>{
+          //console.log(lineRes[0].height,'line');
+
+          //动态计算底部距离，平均分布菜单
+          let bottom = res.windowHeight - swiperRes[0].height - topRes[0].height - lineRes[0].height*5;
+          //console.log(bottom);
+          this.bottom = bottom/5;
+          this.$apply();
+        });
+
+      });
+    });
+      }
+    });
+    
+  
+  }
+}
+</script>

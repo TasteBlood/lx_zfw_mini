@@ -1,0 +1,50 @@
+<style lang="less" scoped>
+    .big-image{
+        position: fixed;
+        left: 0;
+        top: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        z-index: 20;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        text-align: center;
+        line-height: 100%;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+</style>
+<template>
+    <cover-view class="big-image" wx:if="{{show}}" @tap="onClose">
+        <cover-image src="{{url}}" mode="widthFix" style="width:80%;height:auto"></cover-image>
+    </cover-view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class BigImage extends wepy.component{
+    props = {
+        url:{
+            default:'',
+            type:String
+        },
+        show:{
+            default:false,
+            type:Boolean
+        }
+    };
+    methods={
+        onClose(e){
+            //console.log(e)
+            this.$emit("onClose");
+        }
+    };
+    onLoad(){
+        // console.log(this.url)
+        // console.log(this.show)
+    }
+}
+</script>

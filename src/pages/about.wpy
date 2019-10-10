@@ -1,0 +1,48 @@
+<style lang="less" scoped>
+    .container{
+        padding: 40rpx 20rpx 20rpx 20rpx;
+        display: flex;
+        flex-direction: column;
+    }
+    .guohui{
+        box-shadow:0px 1px 2px 0px rgba(0, 0, 0, 0.35);
+        border-radius:12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: white;
+        align-items: center;
+        padding: 20rpx;
+    }
+
+    .menu{
+        padding: 20rpx;
+        background-color: white;
+        margin-top: 10rpx;
+        box-shadow:0px 1px 2px 0px rgba(0, 0, 0, 0.35);
+        border-radius: 8rpx;
+    }
+</style>
+<template>
+    <view class="container">
+        <view class="guohui">
+            <image src='../res/ic_guohui.png' mode='asceptFill' style="width:120rpx;height:120rpx;"></image>
+            <text style="font-size:38rpx;font-weight:bold;margin-top:20rpx;">兰州市政法委员会</text>
+            <text style="margin-top:20rpx;text-indent:80rpx;line-height:50rpx;font-size:32rpx">为维护公众利益和国家利益为目的，宣扬国家和地方的法律法规，本小程序为广大人民群众提供了扫黑除恶举报平台。广大人民群众通过该软件进行违法举报，更便于政法人员进行执法，同时便于信息的收集，为相关的执法部门或管理部门提供更加详实的利于办案和解决问题的资料和信息。</text>
+        </view>
+        <view class="menu">联系电话：0931-8482771</view>
+        <view class="menu">服务地址：甘肃省兰州市城关区滨河东路589号</view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+export default class About extends wepy.page {
+  config = {
+    navigationBarTitleText: '关于我们',
+    navigationBarBackgroundColor: '#2F23D1',
+    navigationBarTextStyle: 'white'
+  };
+  data = {};
+  methods = {};
+}
+</script>

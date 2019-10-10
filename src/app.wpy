@@ -1,0 +1,135 @@
+<style lang="less">
+@font-face {
+  font-family: '微软雅黑';
+  src: url('微软雅黑');
+}
+
+page {
+  background-color: #fefefe;
+}
+
+.icon-36 {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.icon-48 {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.btn-primary {
+  background-color: #2f23d1;
+  color: white;
+  box-shadow: 0 4rpx 10rpx 10rpx #f1f1f1;
+}
+
+.btn-primary:active {
+  background-color: rgb(35, 25, 168);
+}
+
+.single-line {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.multi-line {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+</style>
+<script>
+import wepy from 'wepy';
+import 'wepy-async-function';
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/index',
+      'pages/saohei_index',
+      'pages/saohei_confirm',
+      'pages/saohei_jubao',
+      'pages/location',
+      'pages/score_note',
+      'pages/mine',
+      'pages/about',
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTitleText: '兰州政法委小程序',
+      navigationBarTextStyle: 'black'
+    },
+    tabBar: {
+      color: '#2A176F',
+      selectedColor: '#ffffff',
+      backgroundColor: '#2F23D1',
+      borderStyle: 'white',
+      list: [
+        {
+          pagePath: 'pages/index',
+          text: '首页',
+          iconPath: './res/home.png',
+          selectedIconPath: './res/home_selected.png'
+        },
+        {
+          pagePath: 'pages/mine',
+          text: '我的',
+          iconPath: './res/mine.png',
+          selectedIconPath: './res/mine_selected.png'
+        }
+      ]
+    },
+    permission: {
+      'scope.userLocation': {
+        desc: '部分功能需要位置信息才能完成'
+      }
+    }
+  };
+
+  onLoad() {
+    
+  }
+
+  onLaunch() {}
+
+  onShow(){
+    //检查版本
+    const updateManager = wx.getUpdateManager();
+    updateManager.onCheckForUpdate(function(res) {
+      console.log('onCheckForUpdate====', res);
+      // 请求完新版本信息的回调
+      if (res.hasUpdate) {
+        //console.log('res.hasUpdate====');
+        updateManager.onUpdateReady(function() {
+          wx.showModal({
+            title: '更新提示',
+            content: '新版本已经准备好，是否重启应用？',
+            success: function(res) {
+              console.log('success====', res);
+              // res: {errMsg: "showModal: ok", cancel: false, confirm: true}
+              if (res.confirm) {
+                // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+                updateManager.applyUpdate();
+              }
+            }
+          });
+        });
+        updateManager.onUpdateFailed(function() {
+          // 新的版本下载失败
+          wx.showModal({
+            title: '已经有新版本了哟~',
+            content: '新版本已经上线啦~，请您删除当前小程序，重新搜索打开哟~'
+          });
+        });
+      }
+    });
+  }
+}
+</script>

@@ -1,0 +1,15 @@
+{
+	"description": "兰州政法委小程序",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"appid": "wxc794e10711a99f9b",
+	"projectname": "lz_zfw_mini",
+	"miniprogramRoot": "dist/",
+	"condition": {}
+}

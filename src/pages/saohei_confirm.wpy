@@ -1,0 +1,49 @@
+<style lang="less" scoped>
+    view{
+        line-height: 60rpx;
+    }
+    .container{
+        padding: 40rpx;
+    }
+    .btn-confirm{
+        width: 100%;
+        height: 100rpx;
+        color:white;
+        background-color: #2F23D1;
+        line-height: 100rpx;
+        text-align: center;
+        position: fixed;
+        bottom: 0;
+        left:0;
+    }
+    .btn-confirm:active{
+        background-color: rgb(42, 31, 187);
+    }
+</style>
+<template>
+    <view class="container">
+        <view style="text-align:center">扫黑除恶举报须知</view>
+        <view>一、内容真实，准确无误；</view>
+        <view>二、违法乱纪，危害社会；</view>
+        <view>三、恶黑团伙，聚众闹事；</view>
+        <view class="btn-confirm" @tap='confirm'>同 意</view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+export default class SaoHeiComfirm extends wepy.page {
+  config = {
+    navigationBarTitleText: '举报须知',
+    navigationBarBackgroundColor: '#2F23D1',
+    navigationBarTextStyle: 'white'
+  };
+  data = {};
+  methods = {
+      confirm(){
+          wx.redirectTo({
+              url: './saohei_jubao'
+          })
+      }
+  };
+}
+</script>
