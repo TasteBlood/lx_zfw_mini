@@ -95,11 +95,11 @@
       </view>
     </view>
     <view class="menu-panel">
-      <view class="menu-line" style="margin-bottom:{{bottom}}px">
+      <view class="menu-line" @tap="skipTo" data-type="law" style="margin-bottom:{{bottom}}px">
         <view class="content">政策法规</view>
         <image src="http://qn-zfw.yungoux.com/1570585283440.png" mode="asceptFill" class="pic" />
       </view>
-      <view class="menu-line" style="margin-bottom:{{bottom}}px"> 
+      <view class="menu-line" @tap="skipTo" data-type="shiyu" style="margin-bottom:{{bottom}}px"> 
         <view class="content">市域治理</view>
         <image src="http://qn-zfw.yungoux.com/1570585258778.png" mode="asceptFill" class="pic" />
       </view>
@@ -107,7 +107,7 @@
         <view class="content">维护稳定</view>
         <image src="http://qn-zfw.yungoux.com/1570585626267.png" mode="asceptFill" class="pic" />
       </view>
-      <view class="menu-line" style="margin-bottom:{{bottom}}px">
+      <view class="menu-line" @tap="skipTo" data-type="xiejiao" style="margin-bottom:{{bottom}}px">
         <view class="content">反邪防邪</view>
         <image src="http://qn-zfw.yungoux.com/1570585206689.png" mode="asceptFill" class="pic" />
       </view>
@@ -148,10 +148,41 @@ export default class Index extends wepy.page {
     skipTo(e) {
       switch (e.currentTarget.dataset.type) {
         case 'score':
-          wepy.navigateTo({ url: './score_note' });
+          let user = wx.getStorageSync('login_user');
+                    //console.log(user)
+                    if(!user){
+                        //console.log('come this null')
+                        wepy.showModal({
+                          title: '未登录', //提示的标题,
+                          content: '是否前去登录', //提示的内容,
+                          showCancel: true, //是否显示取消按钮,
+                          cancelText: '取消', //取消按钮的文字，默认为取消，最多 4 个字符,
+                          cancelColor: '#000000', //取消按钮的文字颜色,
+                          confirmText: '确定', //确定按钮的文字，默认为取消，最多 4 个字符,
+                          confirmColor: '#2F23D1', //确定按钮的文字颜色,
+                          success: res => {
+                              if(res.confirm){
+                                  wepy.switchTab({ url: './mine' });
+                              }
+                          }
+                        });
+                    }else{
+                        //console.log('come this not null')
+                        wepy.navigateTo({ url: './score_note' });
+                    }
+          
           break;
         case 'wechat':
           break;
+        case 'law':
+          wepy.navigateTo({ url: './law' });
+          break;  
+        case 'shiyu':
+          wepy.navigateTo({ url: './shiyuzhili' });
+          break;
+        case 'xiejiao':
+          wepy.navigateTo({ url: './xiejiao' });
+          break;  
         case 'saohei':
           wepy.navigateTo({ url: './saohei_index' });
           break;

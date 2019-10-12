@@ -1,0 +1,156 @@
+<style lang="less" scoped>
+.container {
+  padding: 10rpx 20rpx 20rpx 20rpx;
+}
+.top-pic {
+  width: 100%;
+  height: 380rpx;
+  box-shadow: 0 4rpx 4rpx 6rpx #e1e1e1;
+}
+
+.list {
+  margin-top: 20rpx;
+}
+
+.item {
+  padding: 20rpx;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 4rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 0 8rpx 4rpx #f1f1f1;
+}
+
+.title {
+  color: #f02e28;
+}
+
+.content {
+  height: 98%;
+  width: 66%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.modal{
+    left:0;
+    top:0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    z-index: 10;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    .content{
+        background-color: white;
+        width: 100%;
+        height: 100%;
+        padding: 40rpx 20rpx 20rpx 20rpx;
+        overflow-y: scroll;
+    }
+}
+
+</style>
+<template>
+    <view class="container">
+        <image src='http://qn-zfw.yungoux.com/1570784594612.png' class="top-pic" mode='asceptFill'></image>
+        <view class="list">
+            <block wx:for="{{items}}" wx:key="{{index}}">
+                <view class="item" @tap='onItemClick' data-item='{{item}}'>
+                    <view class="content">
+                        <text class="title single-line">{{item.title}}</text>
+                        <rich-text nodes='{{item.preContent}}' class="multi-line" style="font-size:30rpx;color:#0D0D0D;margin-top:10rpx;"></rich-text>
+                    </view>
+                    <image mode='asceptFill' style="width:220rpx;height:160rpx;" src="{{item.img?item.img:'../res/img_error.png'}}"></image>
+                </view>
+            </block>
+        </view>
+        <view class="modal" wx:if='{{showModal}}'>
+            <view class="content">
+                <view>
+                    <view style="text-align:right">
+                      <image src='../res/close.png' class="icon-48" @tap='onClose'></image>
+                    </view>
+                    <rich-text nodes='{{currentContent}}' style="margin-top:60rpx;line-height:50rpx;text-indent:80rpx;"></rich-text>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+import { getLaws } from '../utils/api';
+export default class Law extends wepy.page {
+  config = {
+    navigationBarTitleText: '政策法规',
+    navigationBarTextStyle: 'white',
+    backgroundTextStyle: 'dark',
+    navigationBarBackgroundColor: '#2F23D1',
+    enablePullDownRefresh: true
+  };
+  data = {
+    showModal:false,
+    load: false,
+    noMore: false,
+    page: 1,
+    size: 20,
+    items: [],
+    currentContent:null,
+  };
+  methods = {
+    onClose(){
+      this.showModal = false;
+    },
+    onItemClick(e){
+      this.currentContent = e.currentTarget.dataset.item.content;
+      this.currentContent = this.currentContent.replace('<img','<img style="width:80%" ');
+      this.showModal = true;
+    }
+  };
+
+  async loadData(page, size) {
+    if (this.load) return;
+    this.load = true;
+    let res = await getLaws(page, size);
+    res.info.records.map(e=>{
+        e.preContent = e.content.substring(0,40);
+    });
+    this.load = false;
+    wepy.stopPullDownRefresh();
+    if (page === 1) {
+      this.items = res.info.records;
+      this.noMore = false;
+    } else {
+      this.items.concat(res.info.records);
+      if (res.info.totalpage === page) {
+        this.noMore = true;
+      } else {
+        this.noMore = false;
+        this.page++;
+      }
+    }
+    this.$apply();
+  }
+
+  onLoad() {
+    this.loadData(this.page, this.size);
+  }
+
+  onPullDownRefresh() {
+    this.page = 1;
+    this.loadData(this.page, this.size);
+  }
+
+  onReachBottom() {
+    if (this.noMore) return;
+    this.loadData(this.page, this.size);
+  }
+}
+</script>

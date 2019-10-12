@@ -6,6 +6,8 @@
     width: 100%;
     height: 100%;
     background-color: #EDF1FB;
+    padding-bottom: 20rpx;
+    overflow-y: scroll;
   }
 
   .user-info{
@@ -115,6 +117,11 @@
             <text style="margin-left:20rpx;width:85%">举报记录</text>
             <image class="icon-36" src='../res/ic_next.png' mode='asceptFill'></image>
         </view>
+        <view class="menu" @tap='skipTo' data-type='fankui'>
+            <image class="icon-36" src='../res/ic_fankui.png' mode='asceptFill'></image>
+            <text style="margin-left:20rpx;width:85%">举报反馈</text>
+            <image class="icon-36" src='../res/ic_next.png' mode='asceptFill'></image>
+        </view>
         <view class="menu" @tap='skipTo' data-type='xiaofei'>
           <image class="icon-36" src='../res/ic_xiaofei.png' mode='asceptFill'></image>
           <text style="margin-left:20rpx;width:85%">积分消费</text>
@@ -174,8 +181,9 @@ export default class Mine extends wepy.page {
               mask: true, //显示透明蒙层，防止触摸穿透,
               success: res => {}
             });
-            
           }
+          wepy.navigateTo({ url: './jubao_record' });
+          
           break;
         case 'xiaofei':
           if(!this.userInfo){

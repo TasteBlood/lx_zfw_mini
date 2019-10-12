@@ -17,92 +17,128 @@
   width: 100%;
 }
 
-.bg{
-    position: absolute;
-    left:0;
-    top:0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
+.bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
 }
 
-.user-info{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.user-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
-.note-btn{
-    position: relative;
-    left:0;
-    margin: 0 auto;
-    width: 150rpx;
-    height: 150rpx;
-    text-align: center;
-    line-height: 150rpx;
-    border-radius: 50%;
-    background-color: #A01C22;
-    box-shadow: 0rpx 0rpx 10rpx 4rpx #A01C22;
-    color: white;
-    margin-top: 50rpx;
+.note-btn {
+  position: relative;
+  left: 0;
+  margin: 0 auto;
+  width: 150rpx;
+  height: 150rpx;
+  text-align: center;
+  line-height: 150rpx;
+  border-radius: 50%;
+  background-color: #a01c22;
+  box-shadow: 0rpx 0rpx 10rpx 4rpx #a01c22;
+  color: white;
+  margin-top: 50rpx;
 }
-.note-btn:active{
-    box-shadow: 0rpx 0rpx 10rpx 4rpx rgb(78, 13, 16);
-}
-
-.menu{
-    margin-top: 60rpx;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.note-btn:active {
+  box-shadow: 0rpx 0rpx 10rpx 4rpx rgb(78, 13, 16);
 }
 
-.info{
-    width: 40%;
-    height: 80rpx;
-    background-color: #DEF5FF;
-    margin-top: 20rpx;
-    border-radius: 40rpx;
-    line-height: 80rpx;
+.menu {
+  margin-top: 60rpx;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.info {
+  width: 40%;
+  height: 80rpx;
+  background-color: #def5ff;
+  margin-top: 20rpx;
+  border-radius: 40rpx;
+  line-height: 80rpx;
 }
 </style>
 <template>
     <view class="container">
         <image src='http://qn-zfw.yungoux.com/1570586718167.png' mode='asceptFill' class="bg"></image>
         <view class="user-info">
-            <image src='../res/default_avatar.png' style="width:100rpx;height:100rpx;" mode='asceptFill'></image>
+            <image src='{{userInfo.headImg}}' style="width:100rpx;height:100rpx;" mode='asceptFill'></image>
             <view style="margin-left:20rpx;display:flex;flex-direction:row;justify-content:space-between;width:80%">
-                <text style="font-size:36rpx">用户名:徐静姝</text>
-                <text style="color:#2B98D4">2019-12-29</text>
+                <text style="font-size:36rpx">用户名:{{userInfo.nick}}</text>
+                <text style="color:#2B98D4">{{date}}</text>
             </view>
         </view>
-        <view class="note-btn">未签到</view>
+        <view class="note-btn" @tap='signClick'>{{scoreInfo.state===0?'未签到':'已签到'}}</view>
         <view class="menu">
             <text>累计积分</text>
-            <text class="info">50</text>
+            <text class="info">{{scoreInfo.integralSum}}</text>
         </view>
         <view class="menu">
             <text>签到累计天数</text>
-            <text class="info">15</text>
+            <text class="info">{{scoreInfo.singIncount}}</text>
         </view>
     </view>
 </template>
 <script>
 import wepy from 'wepy';
+import { getScores, signNote } from '../utils/api';
 export default class ScoreNote extends wepy.page {
   config = {
-    navigationBarTitleText:'积分签到',
-    navigationBarTextStyle:'white',
-    navigationBarBackgroundColor:'#2F23D1',
-    disableScroll: true,
+    navigationBarTitleText: '积分签到',
+    navigationBarTextStyle: 'white',
+    navigationBarBackgroundColor: '#2F23D1',
+    disableScroll: true
   };
   data = {
+    userInfo: null,
+    date: '',
+    scoreInfo: null
   };
-  methods = {};
+  methods = {
+    async signClick() {
+      if (this.scoreInfo.state > 0) return;
+      let res = await signNote(1, this.userInfo.id);
+      if (res.status === 1) {
+        let res = await getScores(this.userInfo.id);
+        this.scoreInfo = res.info;
+        this.$apply();
+      }
+    }
+  };
 
   onLoad() {
+    this.userInfo = wx.getStorageSync('login_user');
+
+    //扩展Date函数处理日期
+    Date.prototype.format = function() {
+      let year = this.getFullYear();
+      let month = this.getMonth() + 1;
+      let day = this.getDate();
+      return (
+        year +
+        '-' +
+        (month >= 10 ? month : `0${month}`) +
+        '-' +
+        (day >= 10 ? day : `0${day}`)
+      );
+    };
+    this.date = new Date().format();
+  }
+
+  async onShow() {
+    let res = await getScores(this.userInfo.id);
+    this.scoreInfo = res.info;
+    this.$apply();
   }
 }
 </script>

@@ -1,0 +1,204 @@
+<style lang="less" scoped>
+.container {
+  padding: 20rpx;
+}
+
+.top{
+    padding: 20rpx;
+    background-color: white;
+    border-radius: 8rpx;
+    box-shadow: 0 0 4rpx 2rpx #e1e1e1;
+}
+
+.content{
+    padding: 20rpx;
+    background-color: white;
+    border-radius: 8rpx;
+    box-shadow: 0 0 4rpx 2rpx #e1e1e1;
+    margin-top: 20rpx;
+}
+.label{
+    color:#515151;
+}
+
+.btn-play{
+    width: 300rpx;
+    height: 60rpx;
+    line-height: 60rpx;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 20rpx 0 20rpx;
+    color:white;
+    background-color: #F39700;
+    border-radius: 8rpx;
+    box-shadow: 0 0 8rpx 2rpx #f1f1f1;
+}
+.btn-play:active{
+    background-color: rgb(230, 142, 0);
+}
+.play-panel {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: tow;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+@keyframes Fade{
+  from{
+    box-shadow: 0rpx 0rpx 8rpx 4rpx #f1f1f1;
+  }
+
+  to{
+    box-shadow: 0rpx 0rpx 20rpx 4rpx #f1f1f1;
+  }
+}
+
+.stop-btn{
+  width: 150rpx;
+  height: 150rpx;
+  text-align: center;
+  line-height: 150rpx;
+  background-color: #f39800;
+  color: white;
+  border-radius: 50%;
+  box-shadow: 0rpx 0rpx 8rpx 4rpx #f1f1f1;
+  animation: Fade 1s infinite linear alternate;
+}
+</style>
+<template>
+    <view class="container">
+        <view class="top">
+            <view>
+                <text class="label">举报类型：</text>
+                <text>{{pass.type===1?'匿名举报':'实名举报'}}</text>
+            </view>
+            <view wx:if="{{pass.type===2}}" style="margin-top:10rpx;">
+                <text class="label">举报人：</text>
+                <text>{{pass.name}}</text>
+            </view>
+            <view wx:if="{{pass.type===2}}" style="margin-top:10rpx;">
+                <text class="label">联系方式：</text>
+                <text>{{pass.mobile}}</text>
+            </view>
+            <view wx:if="{{pass.type===2}}" style="margin-top:10rpx;">
+                <text class="label">身份证号：</text>
+                <text>{{pass.idCard}}</text>
+            </view>
+            <view style="margin-top:10rpx;">
+                <text class="label">发生日期：</text>
+                <text>{{pass.happenDate}}</text>
+            </view>
+            <view style="margin-top:10rpx;">
+                <text class="label">发生地点：</text>
+                <text>{{pass.address}}{{pass.addressDetail}}</text>
+            </view>
+            <view style="margin-top:10rpx;">
+                <text class="label">被举报人/单位：</text>
+                <text>{{pass.personReported}}</text>
+            </view>
+        </view>
+        <view class="content">
+            <view class="label" style="align-items:center;display:flex;flex-direction:row;justify-content:space-between;">
+                <text>举报事件：</text>
+                <view>
+                    <view style="text-align:right;color:#3CAE34;font-size:30rpx;" wx:if='{{item.state===2}}'>已反馈</view>
+                    <view style="text-align:right;color:#515151;font-size:30rpx" wx:else>未反馈</view>
+                </view>
+            </view>
+            <view style="margin-top:20rpx;">{{pass.content}}</view>
+            <view class="label" style="margin-top:40rpx;">语音留言：</view>
+            <view class="btn-play" @tap='onPlayClick' style="margin-top:20rpx;" wx:if='{{pass.soundRecord}}'>
+                <image src='../res/ic_voice.png' class="icon-36" mode='asceptFill'></image>
+                <text style="margin-left:20rpx;">播放录音文件</text>
+            </view>
+            <view style="margin-top:20rpx;" wx:else>无录音信息</view>
+            <view class="label" style="margin-top:40rpx;">我的要求：</view>
+            <view style="margin-top:20rpx;">{{pass.requirement}}</view>
+            <view class="label" style="margin-top:40rpx;">附件信息：</view>
+            <gridImage @onItemClick.user='onItemClick' :resources.sync='getImages'></gridImage>
+        </view>
+        <bigImage @onClose.user='onClose' :show.sync='showBig' :url.sync='currentUrl'></bigImage>
+        <!-- playing panel -->
+        <cover-view class="play-panel" wx:if="{{showPlay}}">
+            <cover-view class="stop-btn" @tap='stopPlay'>关 闭</cover-view>
+        </cover-view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+import GridImage from '../components/gridImage';
+import BigImage from '../components/bigImage';
+let audioPlayer = wx.createInnerAudioContext();
+
+export default class JubaoDetail extends wepy.page {
+  config = {
+    navigationBarTitleText: '举报详情',
+    navigationBarTextStyle: 'white',
+    backgroundTextStyle: 'dark',
+    navigationBarBackgroundColor: '#2F23D1'
+  };
+  data = {
+      pass:null,
+      showBig:false,
+      currentUrl:'',
+      showPlay:false,
+  };
+
+  components = {
+      gridImage:GridImage,
+      bigImage:BigImage
+  };
+
+  methods = {
+      onItemClick(e){
+          this.showBig = true;
+          this.currentUrl = e;
+      },
+      onClose(){
+          this.showBig = false;
+      },
+      onPlayClick(){
+          audioPlayer.play();
+          this.showPlay = true;
+      },
+      stopPlay(){
+          audioPlayer.stop();
+          this.showPlay = false;
+      }
+  };
+
+  computed = {
+      getImages(){
+          if(this.pass&&this.pass.imgUrl){
+              return this.pass.imgUrl.split(';')
+          }else{
+              return [];
+          }
+      }
+  };
+
+  onLoad(){
+      this.pass = wepy.$instance.data.pass;
+      this.pass.pics = this.pass.imgUrl.split(';');
+      this.$apply();
+      if(this.pass.soundRecord){
+          audioPlayer.src = this.pass.soundRecord;
+          audioPlayer.loop = true;
+      }
+      // console.log(audioPlayer);
+  }
+
+  onUnload(){
+      //console.log('hahaha')
+      wepy.$instance.data.pass = null;
+  }
+}
+</script>

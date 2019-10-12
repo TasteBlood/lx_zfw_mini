@@ -1,0 +1,7 @@
+APP_ID: wxc794e10711a99f9b
+APP_SECRET: a8588f883849e5fce6fb39d17e599c14
+AK: 6GWBZ-R3MWU-E72VP-BFPNG-TSFMO-CCBB2
+SIGN: uRpgvFWuquCfkU1VLDMgUikmkYbpSGS
+
+username: shennongshizu@163.com
+password: Hello1234

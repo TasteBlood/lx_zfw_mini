@@ -1,0 +1,173 @@
+<style lang="less" scoped>
+.container {
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+}
+.name {
+  padding: 40rpx;
+  background-color: white;
+  border-radius: 10rpx;
+  box-shadow: 0 0 10rpx 4rpx #e1e1e1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.input {
+  width: 70%;
+  padding: 12rpx;
+  color: #414141;
+  border: 2rpx solid #e1e1e1;
+  border-radius: 8rpx;
+}
+
+.canvas {
+  background-color: white;
+  box-shadow: 0 0 20rpx 4rpx #e1e1e1;
+  border-radius: 10rpx;
+  width: 100%;
+  height: 450rpx;
+  margin-top: 20rpx;
+}
+
+.btn-clear {
+  position: relative;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  width: 40%;
+  height: 80rpx;
+  border: 1rpx solid #b1b1b1;
+  color: #414141;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 10rpx;
+  margin-top: 20rpx;
+}
+
+.btn-save {
+  position: relative;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  width: 40%;
+  height: 80rpx;
+  background-color: #2f23d1;
+  color: white;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 10rpx;
+  margin-top: 20rpx;
+}
+
+.btn-save:active {
+  background-color: rgb(37, 27, 177);
+}
+</style>
+<template>
+    <view class="container">
+        <view class="name">
+            <text>昵称：</text>
+            <text placeholder="请输入真实姓名" class="input" placeholder-style="colro:#717171">{{userInfo.nick}}</text>
+        </view>
+        <text style="margin-top:40rpx;">签字板(手指签字)：</text>
+        <canvas id="canvas" class="canvas" canvas-id="signCanvas" @touchstart='touchstart' @touchmove='touchmove'></canvas>
+        <view class="btn-clear" @tap='clear'>清 空</view>
+        <view class="btn-save" @tap='submit'>提 交</view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+import {UploadSingle} from '../utils/uploader';
+import {addSign} from '../utils/api';
+
+export default class Sign extends wepy.page {
+  config = {
+    navigationBarTitleText: '反邪防邪签字',
+    navigationBarTextStyle: 'white',
+    backgroundTextStyle: 'dark',
+    navigationBarBackgroundColor: '#2F23D1',
+    disableScroll: true
+  };
+  data = {
+    context: null,
+    width: 0,
+    height: 0,
+    userInfo: null
+  };
+  methods = {
+    touchstart(e) {
+      this.context.moveTo(e.changedTouches[0].x, e.changedTouches[0].y);
+    },
+    touchmove(e) {
+      this.context.lineTo(e.changedTouches[0].x, e.changedTouches[0].y);
+      this.context.stroke();
+      this.context.draw(true);
+      this.context.moveTo(e.changedTouches[0].x, e.changedTouches[0].y);
+    },
+    submit() {
+      let self = this;
+      wepy.showLoading({
+        title: '签名生成中', //提示的内容,
+        mask: true, //显示透明蒙层，防止触摸穿透,
+        success: res => {}
+      });
+      
+      wx.canvasToTempFilePath({
+          canvasId:'signCanvas',
+          width:self.width,
+          height:self.height,
+          destWidth:200,
+          destHeight:100,
+          fileType:'jpg',
+          success(res){
+              UploadSingle(res.tempFilePath,
+              async (res)=>{
+                  //将信息提交到数据库
+                  res = await addSign(self.userInfo.nick,res,self.userInfo.id)
+                  if(res.status===1){
+                      wx.showToast({
+                          title: '签名成功',
+                          icon: 'none'
+                      });
+                      setTimeout(() => {
+                          wepy.navigateBack({
+                            delta: 1 //返回的页面数，如果 delta 大于现有页面数，则返回到首页,
+                          });
+                      }, 500);
+                  }
+              },
+              (err)=>{
+
+              })
+          }
+      },this);
+    },
+    clear() {
+      this.context.clearRect(0, 0, this.width, this.height);
+      this.context.draw();
+    }
+  };
+
+  onLoad() {
+    this.userInfo = wx.getStorageSync('login_user');
+    this.context = wx.createCanvasContext('signCanvas');
+    let query = wx.createSelectorQuery();
+    query.select('#canvas').boundingClientRect();
+    let self = this;
+    query.exec(function(rect) {
+      let width = rect[0].width;
+      let height = rect[0].height;
+      self.width = width;
+      self.height = height;
+    });
+    this.context.setStrokeStyle('#414141');
+    this.context.setLineWidth(2);
+    this.context.setFontSize(20);
+  }
+}
+</script>

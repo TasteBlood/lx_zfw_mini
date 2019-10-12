@@ -152,7 +152,7 @@ radio-group {
     <view class="input-line" @tap="onLocationClick">
       <view class="label"><text class="not-null">*</text>事件地点:</view>
       <view style="width:68%;margin-left:10rpx;" class="mutli-line">{{address?address:'请选择地点'}}</view>
-      <image src="../res/ic_next.png" class="icon-36"></image>
+      <image src="../res/ic_next.png" class="icon-36" />
     </view>
     <view class="input-line">
       <text class="label">详细地址:</text>
@@ -163,7 +163,7 @@ radio-group {
       <picker mode="date" style="width:68%;margin-left:10rpx;" @change="onDateChange">
         <view>{{date}}</view>
       </picker>
-      <image src="../res/ic_calendar.png" class="icon-36"></image>
+      <image src="../res/ic_calendar.png" class="icon-36" />
     </view>
     <view class="input-line">
       <text class="label"><text class="not-null">*</text>我举报谁:</text>
@@ -534,7 +534,7 @@ export default class SaoHeiJuBao extends wepy.page {
     }
   }
 
-  onUnLoad(){
+  onUnload(){
     audioPlayer.destroy();
   }
 }

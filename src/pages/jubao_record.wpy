@@ -1,0 +1,116 @@
+<style lang="less" scoped>
+.list {
+  padding: 20rpx;
+}
+.item {
+  background-color: white;
+  padding: 20rpx;
+  border-radius: 8rpx;
+  box-shadow: 0 0 2rpx 1rpx #f1f1f1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.item:active{
+    background-color: transparent;
+}
+
+.content{
+    width: 95%;
+}
+.label{
+    color:#515151;
+}
+</style>
+<template>
+    <view class="list">
+        <view class="item" wx:for="{{items}}" wx:key='{{index}}' @tap='onItemClick' data-item='{{item}}'>
+            <view class="content">
+                <view>
+                    <text class="label">举报时间:</text>
+                    <text>{{item.createTime}}</text>
+                </view>
+                <view style="margin-top:10rpx;">
+                    <text class="label">举报地点:</text>
+                    <text>{{item.address}}</text>
+                </view>
+                <view style="margin-top:10rpx;display:flex;flex-direction:row">
+                    <text class="label">类型:</text>
+                    <text>{{item.type===1?'匿名举报':'实名举报'}}</text>
+                </view>
+                <view style="margin-right:-20rpx;text-align:right;color:#3CAE34;font-size:30rpx;" wx:if='{{item.state===2}}'>已反馈</view>
+                <view style="margin-right:-20rpx;text-align:right;color:#515151;font-size:30rpx" wx:else>未反馈</view>
+            </view>
+            <image class="icon-36" src='../res/ic_next.png' mode='asceptFill'></image>
+        </view>
+    </view>
+</template>
+<script>
+
+import wepy from 'wepy';
+import {getAccusations} from '../utils/api';
+let uid = 0;
+export default class JubaoRecord extends wepy.page {
+  config = {
+    navigationBarTitleText: '举报记录',
+    navigationBarTextStyle: 'white',
+    backgroundTextStyle: 'dark',
+    navigationBarBackgroundColor: '#2F23D1',
+    enablePullDownRefresh: true
+  };
+  data = {
+    page: 1,
+    size: 20,
+    load: false,
+    noMore: false,
+    items: []
+  };
+  methods = {
+      onItemClick(e){
+          wepy.$instance.data.pass = e.currentTarget.dataset.item;
+          wepy.navigateTo({ url: './jubao_detail' });   
+      }
+  };
+
+  async loadData(page,size){
+          if(this.load)return;
+          this.load = true;
+          let res = await getAccusations(page,size,uid);
+          //console.log(res);
+          wx.stopPullDownRefresh();
+          this.load = false;
+          if(page===1){
+              this.items = res.info.records;
+              this.noMore = false;
+          }else{
+              this.items.concat(res.info.records);
+              if(res.info.totalpage===page){
+                  this.noMore = true;
+              }else{
+                  this.noMore = false;
+                  this.page ++;
+              }
+          }
+          this.$apply();
+
+    }
+
+  onLoad() {
+      uid = wx.getStorageSync('login_user').id;
+      this.loadData(this.page,this.size)
+  }
+
+  onPullDownRefresh(){
+      this.page = 1;
+      this.loadData(this.page,this.size)
+  }
+
+  onReachBottom(){
+      if(this.noMore)return;
+      this.loadData(this.page,this.size);
+  }
+}
+</script>
+

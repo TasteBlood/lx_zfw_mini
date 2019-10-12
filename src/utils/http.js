@@ -1,4 +1,4 @@
-const BASE_URL = "http://192.168.31.51:8086";
+const BASE_URL = "http://192.168.31.160:8086";
 // const BASE_URL = "https://wuye-service-landa.lz-cc.com";
 
 
@@ -38,9 +38,7 @@ const GET = async (url, params, loading) => {
                             // })
                             wx.removeStorageSync('login_user')
                             setTimeout(() => {
-                                wx.navigateTo({
-                                    url: '../pages/mine'
-                                })
+                                wepy.switchTab({ url: '../mine' });
                             }, 500);
                         } else {
                             if(url.indexOf('findIsOrder')===-1){
@@ -115,9 +113,8 @@ const POST = async (url, params, loading) => {
                             // })
                             wx.removeStorageSync('login_user')
                             setTimeout(() => {
-                                wx.navigateTo({
-                                    url: '../pages/mine'
-                                })
+                                wepy.switchTab({ url: '../mine' });
+                                
                             }, 500);
                         } else {
                             wx.showToast({

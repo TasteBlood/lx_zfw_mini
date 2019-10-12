@@ -1,0 +1,251 @@
+<style lang="less" scoped>
+.container {
+}
+.top-pic {
+  width: 100%;
+  height: 320rpx;
+  background-color: white;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+}
+
+swiper {
+  height: 300rpx !important;
+}
+
+.list {
+  margin-top: 20rpx;
+  margin-left: 20rpx;
+  margin-right: 20rpx;
+}
+
+.item {
+  padding: 20rpx;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 4rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 0 8rpx 4rpx #f1f1f1;
+}
+
+.title {
+  color: #f02e28;
+}
+
+.content {
+  height: 98%;
+  width: 66%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.modal {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  .content {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    padding: 40rpx 20rpx 20rpx 20rpx;
+    overflow-y: scroll;
+  }
+}
+
+.left-view {
+  width: 42%;
+  height: 100%;
+  padding: 10rpx 10rpx 10rpx 20rpx;
+}
+
+.right-view {
+  width: 58%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  padding-right: 40rpx;
+}
+
+.sign-title {
+  color: #7d0505;
+  text-shadow: 0px 6px 6px rgba(125, 5, 5, 0.56);
+  font-style: italic;
+}
+
+.btn-sign {
+  width: 250rpx;
+  height: 80rpx;
+  background-color: #db241f;
+  line-height: 80rpx;
+  text-align: center;
+  box-shadow: 4rpx 4rpx 20rpx 4rpx #a1a1a1;
+}
+
+.btn-sign:active {
+  background-color: rgb(182, 29, 24);
+}
+</style>
+<template>
+    <view class="container">
+        <view class="top-pic">
+          <swiper previous-margin='10rpx' next-margin='220rpx' class="left-view" autoplay circular interval='2000' vertical='true'>
+              <block wx:for="{{signs}}" wx:key="{{index}}">
+                  <swiper-item>
+                    <view style="display:flex;flex-direction:row;align-items:flex-end;">
+                      <text style="color:#414141;">{{item.name}}</text>
+                      <text style="color:#717171;font-style:italic;font-size:26rpx;margin-left:8rpx;">{{item.date}}签字</text>
+                    </view>
+                  </swiper-item>
+              </block>
+          </swiper>
+          <view class="right-view">
+            <text class="sign-title">让我们一起抵制邪教组织！</text>
+            <view style="margin-top:40rpx;" class="btn-sign" @tap='signClick'>去签名</view>
+          </view>
+        </view>
+        <view class="list">
+            <block wx:for="{{items}}" wx:key="{{index}}">
+                <view class="item" @tap='onItemClick' data-item='{{item}}'>
+                    <view class="content">
+                        <text class="title single-line">{{item.title}}</text>
+                        <rich-text nodes='{{item.preContent}}' class="multi-line" style="font-size:30rpx;color:#0D0D0D;margin-top:10rpx;"></rich-text>
+                    </view>
+                    <image mode='asceptFill' style="width:220rpx;height:160rpx;" src="{{item.img?item.img:'../res/img_error.png'}}"></image>
+                </view>
+            </block>
+        </view>
+        <view class="modal" wx:if='{{showModal}}'>
+            <view class="content">
+                <view>
+                    <view style="text-align:right">
+                      <image src='../res/close.png' class="icon-48" @tap='onClose'></image>
+                    </view>
+                    <rich-text nodes='{{currentContent}}' style="margin-top:60rpx;line-height:50rpx;text-indent:80rpx;"></rich-text>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+import { getXieJiaos,getSigns } from '../utils/api';
+export default class Law extends wepy.page {
+  config = {
+    navigationBarTitleText: '反邪防邪',
+    navigationBarTextStyle: 'white',
+    backgroundTextStyle: 'dark',
+    navigationBarBackgroundColor: '#2F23D1',
+    enablePullDownRefresh: true
+  };
+  data = {
+    number: 20,
+    showModal: false,
+    load: false,
+    noMore: false,
+    page: 1,
+    size: 20,
+    items: [],
+    signs:[],
+    currentContent: null,
+    user: null
+  };
+  methods = {
+    onClose() {
+      this.showModal = false;
+    },
+    onItemClick(e) {
+      this.currentContent = e.currentTarget.dataset.item.content;
+      this.currentContent = this.currentContent.replace(
+        '<img',
+        '<img style="width:80%" '
+      );
+      this.showModal = true;
+    },
+    signClick() {
+      if (this.user) {
+        wepy.navigateTo({ url: './sign' });
+      } else {
+        wepy.showModal({
+          title: '未登录', //提示的标题,
+          content: '是否前去登录', //提示的内容,
+          showCancel: true, //是否显示取消按钮,
+          cancelText: '取消', //取消按钮的文字，默认为取消，最多 4 个字符,
+          cancelColor: '#000000', //取消按钮的文字颜色,
+          confirmText: '确定', //确定按钮的文字，默认为取消，最多 4 个字符,
+          confirmColor: '#2F23D1', //确定按钮的文字颜色,
+          success: res => {
+            if (res.confirm) {
+              wepy.switchTab({ url: './mine' });
+            }
+          }
+        });
+      }
+    }
+  };
+
+  async loadData(page, size) {
+    if (this.load) return;
+    this.load = true;
+    let res = await getXieJiaos(page, size);
+    res.info.records.map(e => {
+      e.preContent = e.content.substring(0, 40);
+    });
+    this.load = false;
+    wepy.stopPullDownRefresh();
+    if (page === 1) {
+      this.items = res.info.records;
+      this.noMore = false;
+    } else {
+      this.items.concat(res.info.records);
+      if (res.info.totalpage === page) {
+        this.noMore = true;
+      } else {
+        this.noMore = false;
+        this.page++;
+      }
+    }
+    this.$apply();
+  }
+
+  onLoad() {
+    this.user = wx.getStorageSync('login_user');
+    this.loadData(this.page, this.size);
+  }
+
+  async onShow(){
+    let res = await getSigns();
+    let signs = res.info;
+    if(this.signs===signs) return;
+    this.signs = signs;
+    this.signs.map(e=>{
+      e.date = e.createTime.split(' ')[0];
+    });
+    this.$apply();
+  }
+
+  onPullDownRefresh() {
+    this.page = 1;
+    this.loadData(this.page, this.size);
+  }
+
+  onReachBottom() {
+    if (this.noMore) return;
+    this.loadData(this.page, this.size);
+  }
+}
+</script>

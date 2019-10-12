@@ -5,7 +5,7 @@
 }
 
 page {
-  background-color: #fefefe;
+  background-color: #f4f4f4;
 }
 
 .icon-36 {
@@ -52,6 +52,12 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
+      'pages/sign',
+      'pages/xiejiao',
+      'pages/shiyuzhili',
+      'pages/law',
+      'pages/jubao_record',
+      'pages/jubao_detail',
       'pages/saohei_index',
       'pages/saohei_confirm',
       'pages/saohei_jubao',
@@ -92,6 +98,9 @@ export default class extends wepy.app {
       }
     }
   };
+
+  //程序运行中的数据缓存
+  data = {};
 
   onLoad() {
     
