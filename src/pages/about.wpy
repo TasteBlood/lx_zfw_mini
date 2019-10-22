@@ -26,8 +26,8 @@
 <template>
     <view class="container">
         <view class="guohui">
-            <image src='../res/ic_guohui.png' mode='asceptFill' style="width:120rpx;height:120rpx;"></image>
-            <text style="font-size:38rpx;font-weight:bold;margin-top:20rpx;">兰州市政法委员会</text>
+            <image src='../res/ic_guohui.png' mode='aspectFill' style="width:120rpx;height:120rpx;"></image>
+            <text style="font-size:38rpx;font-weight:bold;margin-top:20rpx;">云政法</text>
             <text style="margin-top:20rpx;text-indent:80rpx;line-height:50rpx;font-size:32rpx">为维护公众利益和国家利益为目的，宣扬国家和地方的法律法规，本小程序为广大人民群众提供了扫黑除恶举报平台。广大人民群众通过该软件进行违法举报，更便于政法人员进行执法，同时便于信息的收集，为相关的执法部门或管理部门提供更加详实的利于办案和解决问题的资料和信息。</text>
         </view>
         <view class="menu">联系电话：0931-8482771</view>
@@ -39,7 +39,7 @@ import wepy from 'wepy';
 export default class About extends wepy.page {
   config = {
     navigationBarTitleText: '关于我们',
-    navigationBarBackgroundColor: '#2F23D1',
+    navigationBarBackgroundColor: '#094baa',
     navigationBarTextStyle: 'white'
   };
   data = {};

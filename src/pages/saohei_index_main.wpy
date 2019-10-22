@@ -58,10 +58,9 @@
 </style>
 <template>
     <view class="container">
-        <image src='http://qn-zfw.yungoux.com/1571216818900.png' class="bg" mode='widthFill' />
+        <image src='http://qn-zfw.yungoux.com/1571216818900.png' class="bg" mode='aspectFill' />
         <view class="title" style="margin-top:{{top}}px">
-            <image src='../res/back.png' class="icon-36" mode='aspectFill' @tap='back' />
-            <text style="margin-left:20rpx">兰州市扫黑除恶平台</text>
+            <text>兰州市扫黑除恶平台</text>
         </view>
         <view class="menu" @tap='skipTo' data-type='shuofa'>
             以案说法

@@ -10,7 +10,7 @@
 }
 
 .swiper {
-  height: 400rpx;
+  height: 360rpx;
 }
 
 .title {
@@ -19,7 +19,7 @@
   left: 20rpx;
   top: 23rpx;
   z-index: 2;
-  font-size: 36rpx;
+  font-size: 34rpx;
 }
 
 .top-menu {
@@ -46,6 +46,7 @@
 .menu-panel {
   margin-left: 60rpx;
   margin-right: 60rpx;
+  margin-top: 20rpx;
 }
 
 .menu-line {
@@ -62,6 +63,11 @@
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
 }
 
+.status-bar{
+  width: 100%;
+  background-color: #094baa;
+}
+
 .pic {
   width: 60%;
   height: 130rpx;
@@ -69,13 +75,14 @@
 .content {
   width: 40%;
   text-align: center;
-  color: #2f23d1;
+  color: #094baa;
   font-size: 34rpx;
   font-weight: bold;
 }
 </style>
 <template>
   <view class="container">
+    <view class="status-bar" style="height:{{top}}px"></view>
     <swiper indicator-dots autoplay circular class="swiper">
       <block wx:for="{{items}}" wx:key="{{index}}">
         <swiper-item>
@@ -83,37 +90,37 @@
         </swiper-item>
       </block>
     </swiper>
-    <view class="title" style="margin-top:{{top}}px;">兰州政法委小程序</view>
-    <view class="top-menu">
+    <view class="title" style="margin-top:{{top}}px;">云政法</view>
+    <view class="top-menu" wx:if="{{1===2}}">
       <view class="menu-left" @tap="skipTo" data-type="score">
-        <image class="icon-36" src="../res/ic_score.png" mode="asceptFill" />
+        <image class="icon-36" src="../res/ic_score.png" mode="aspectFill" />
         <text style="margin-left:10rpx">签到领积分</text>
       </view>
-      <view class="menu-right" @tap="skipTo" data-type="wechat">
-        <image class="icon-36" src="../res/ic_wechat_link.png" mode="asceptFill" />
+      <!-- <view class="menu-right" @tap="skipTo" data-type="wechat">
+        <image class="icon-36" src="../res/ic_wechat_link.png" mode="aspectFill" />
         <text style="margin-left:10rpx">微信链接</text>
-      </view>
+      </view> -->
     </view>
     <view class="menu-panel">
       <view class="menu-line" @tap="skipTo" data-type="law" style="margin-bottom:{{bottom}}px">
         <view class="content">政策法规</view>
-        <image src="http://qn-zfw.yungoux.com/1570585283440.png" mode="asceptFill" class="pic" />
+        <image src="http://qn-zfw.yungoux.com/1570585283440.png" mode="aspectFill" class="pic" />
       </view>
       <view class="menu-line" @tap="skipTo" data-type="shiyu" style="margin-bottom:{{bottom}}px"> 
         <view class="content">市域治理</view>
-        <image src="http://qn-zfw.yungoux.com/1570585258778.png" mode="asceptFill" class="pic" />
+        <image src="http://qn-zfw.yungoux.com/1570585258778.png" mode="aspectFill" class="pic" />
       </view>
-      <view class="menu-line" style="margin-bottom:{{bottom}}px">
+      <view class="menu-line" @tap="skipTo" data-type="weiweng" style="margin-bottom:{{bottom}}px">
         <view class="content">维护稳定</view>
-        <image src="http://qn-zfw.yungoux.com/1570585626267.png" mode="asceptFill" class="pic" />
+        <image src="http://qn-zfw.yungoux.com/1570585626267.png" mode="aspectFill" class="pic" />
       </view>
       <view class="menu-line" @tap="skipTo" data-type="xiejiao" style="margin-bottom:{{bottom}}px">
         <view class="content">反邪防邪</view>
-        <image src="http://qn-zfw.yungoux.com/1570585206689.png" mode="asceptFill" class="pic" />
+        <image src="http://qn-zfw.yungoux.com/1570585206689.png" mode="aspectFill" class="pic" />
       </view>
       <view class="menu-line" style="margin-bottom:{{bottom}}px" @tap="skipTo" data-type="saohei">
         <view class="content">扫黑除恶</view>
-        <image src="http://qn-zfw.yungoux.com/1570585235103.png" mode="asceptFill" class="pic" />
+        <image src="http://qn-zfw.yungoux.com/1570585235103.png" mode="aspectFill" class="pic" />
       </view>
     </view>
   </view>
@@ -131,15 +138,16 @@ export default class Index extends wepy.page {
   components = {};
   data = {
     top: 0,
+    height:0,
     items: [
       {
-        src: 'http://qn-zfw.yungoux.com/1570585161520.png'
+        src: 'http://qn-zfw.yungoux.com/1571215778325.png'
       },
       {
-        src: 'http://qn-zfw.yungoux.com/1570584896547.png'
+        src: 'http://qn-zfw.yungoux.com/1571215812849.png'
       },
       {
-        src: 'http://qn-zfw.yungoux.com/1570585119124.png'
+        src: 'http://qn-zfw.yungoux.com/1571215832870.png'
       }
     ],
     bottom:0
@@ -159,7 +167,7 @@ export default class Index extends wepy.page {
                           cancelText: '取消', //取消按钮的文字，默认为取消，最多 4 个字符,
                           cancelColor: '#000000', //取消按钮的文字颜色,
                           confirmText: '确定', //确定按钮的文字，默认为取消，最多 4 个字符,
-                          confirmColor: '#2F23D1', //确定按钮的文字颜色,
+                          confirmColor: '#094baa', //确定按钮的文字颜色,
                           success: res => {
                               if(res.confirm){
                                   wepy.switchTab({ url: './mine' });
@@ -173,6 +181,13 @@ export default class Index extends wepy.page {
           
           break;
         case 'wechat':
+          wepy.showToast({
+            title: '敬请期待', //提示的内容,
+            icon: 'none', //图标,
+            duration: 1000, //延迟时间,
+            mask: true, //显示透明蒙层，防止触摸穿透,
+            success: res => {}
+          });
           break;
         case 'law':
           wepy.navigateTo({ url: './law' });
@@ -180,6 +195,9 @@ export default class Index extends wepy.page {
         case 'shiyu':
           wepy.navigateTo({ url: './shiyuzhili' });
           break;
+        case 'weiweng':
+          wepy.navigateTo({ url: './weiweng' });
+          break;  
         case 'xiejiao':
           wepy.navigateTo({ url: './xiejiao' });
           break;  
@@ -199,20 +217,21 @@ export default class Index extends wepy.page {
 
         wx.createSelectorQuery().select('.swiper').boundingClientRect().exec(swiperRes=>{
       //console.log(swiperRes[0].height,'swiper');
-      wx.createSelectorQuery().select('.top-menu').boundingClientRect().exec(topRes=>{
-        //console.log(topRes[0].height,'top');
         
         wx.createSelectorQuery().select('.menu-line').boundingClientRect().exec(lineRes=>{
           //console.log(lineRes[0].height,'line');
 
-          //动态计算底部距离，平均分布菜单
-          let bottom = res.windowHeight - swiperRes[0].height - topRes[0].height - lineRes[0].height*5;
+          wx.createSelectorQuery().select('.status-bar').boundingClientRect().exec(statusRes=>{
+            //动态计算底部距离，平均分布菜单
+          let bottom = res.windowHeight - swiperRes[0].height - statusRes[0].height - lineRes[0].height*5;
           //console.log(bottom);
           this.bottom = bottom/5;
           this.$apply();
+
+
+          });
         });
 
-      });
     });
       }
     });

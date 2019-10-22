@@ -11,7 +11,7 @@
     .btn-login{
         width: 60%;
         height: 80rpx;
-        background-color: #2F23D1;
+        background-color: #094baa;
         color: white;
         text-align: center;
         line-height: 80rpx;
@@ -26,7 +26,7 @@
     }
 
     .btn-login:active{
-        background-color: rgb(38, 28, 172);
+        background-color: #083f8b;
     }
 </style>
 <template>
@@ -43,9 +43,9 @@ import wepy from 'wepy';
 import {wxLogin} from '../utils/api';
 export default class Login extends wepy.page {
   config = {
-    navigationBarTitleText: '兰州政法委小程序登录',
+    navigationBarTitleText: '云政法登录',
     navigationBarTextStyle: 'white',
-    navigationBarBackgroundColor: '#2F23D1',
+    navigationBarBackgroundColor: '#094baa',
     disableScroll: true
   };
 

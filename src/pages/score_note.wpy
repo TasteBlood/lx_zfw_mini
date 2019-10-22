@@ -10,7 +10,7 @@
 }
 
 .title {
-  background-color: #2f23d1;
+  background-color: #094baa;
   position: absolute;
   left: 0;
   top: 0;
@@ -70,9 +70,9 @@
 </style>
 <template>
     <view class="container">
-        <image src='http://qn-zfw.yungoux.com/1570586718167.png' mode='asceptFill' class="bg"></image>
+        <image src='http://qn-zfw.yungoux.com/1570586718167.png' mode='aspectFill' class="bg"></image>
         <view class="user-info">
-            <image src='{{userInfo.headImg}}' style="width:100rpx;height:100rpx;" mode='asceptFill'></image>
+            <image src='{{userInfo.headImg}}' style="width:100rpx;height:100rpx;" mode='aspectFill'></image>
             <view style="margin-left:20rpx;display:flex;flex-direction:row;justify-content:space-between;width:80%">
                 <text style="font-size:36rpx">用户名:{{userInfo.nick}}</text>
                 <text style="color:#2B98D4">{{date}}</text>
@@ -96,7 +96,7 @@ export default class ScoreNote extends wepy.page {
   config = {
     navigationBarTitleText: '积分签到',
     navigationBarTextStyle: 'white',
-    navigationBarBackgroundColor: '#2F23D1',
+    navigationBarBackgroundColor: '#094baa',
     disableScroll: true
   };
   data = {

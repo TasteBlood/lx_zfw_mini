@@ -24,15 +24,17 @@
 }
 
 .title {
-  color: #f02e28;
+  color: #1C12A4;
 }
 
 .content {
   height: 98%;
-  width: 66%;
-  display: flex;
+  width: 65%;
+  display: flex; 
   flex-direction: column;
   justify-content: space-between;
+  color: #515151;
+  margin-left: 10rpx;
 }
 
 .modal{
@@ -40,23 +42,17 @@
     top:0;
     width: 100%;
     height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
     position: fixed;
-    z-index: 100;
+    z-index: 10;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
 
-    .bg{
-      width: 100%;
-      height: 100%;
-      position: fixed;
-      background-color: rgba(0, 0, 0, 0.4);
-      z-index:-1;
-    }
-
     .article{
         background-color: white;
+        width: 100%;
         padding: 40rpx 20rpx 20rpx 20rpx;
         box-sizing: border-box;
     }
@@ -65,39 +61,37 @@
 </style>
 <template>
     <view class="container">
-        <image src='http://qn-zfw.yungoux.com/1570784594612.png' class="top-pic" mode='aspectFill'></image>
         <view class="list">
             <block wx:for="{{items}}" wx:key="{{index}}">
                 <view class="item" @tap='onItemClick' data-item='{{item}}'>
+                    <image mode='aspectFill' style="width:220rpx;height:160rpx;" src="{{item.img?item.img:defaultImg}}"></image>
                     <view class="content">
-                        <text class="title mutli-line">{{item.title}}</text>
+                        <text class="title multi-line">{{item.title}}</text>
                         <!-- <rich-text nodes='{{item.preContent}}' class="multi-line" style="font-size:30rpx;color:#0D0D0D;margin-top:10rpx;"></rich-text> -->
                     </view>
-                    <image mode='aspectFill' style="width:220rpx;height:160rpx;" src="{{item.img?item.img:defaultImg}}"></image>
                 </view>
             </block>
         </view>
-
         <view class="modal" wx:if='{{showModal}}' catchtouchmove="catchtouchmove">
-              <scroll-view scroll-y flex-enable style="background-color:white;width:100%;height:100%;">
-                  <view class="article">
-                    <view>
-                        <view style="text-align:right">
-                          <image src='../res/close.png' class="icon-48" @tap='onClose'></image>
-                        </view>
-                        <rich-text nodes='{{currentContent}}' style="margin-top:60rpx;line-height:50rpx;text-indent:80rpx;"></rich-text>
-                    </view>
+            <scroll-view scroll-y flex-enable style="width:100%;height:100%;background-color:white">
+                <view class="article" >
+                  <view>
+                      <view style="text-align:right">
+                        <image src='../res/close.png' class="icon-48" @tap='onClose'></image>
+                      </view>
+                      <rich-text nodes='{{currentContent}}' style="margin-top:60rpx;margin-bottom:20rpx;line-height:50rpx;text-indent:80rpx;"></rich-text>
                   </view>
-              </scroll-view>
+                </view>
+            </scroll-view>
         </view>
     </view>
 </template>
 <script>
 import wepy from 'wepy';
-import { getLaws } from '../utils/api';
-export default class Law extends wepy.page {
+import { getBlacks } from '../utils/api';
+export default class SaoheiCaseToLaw extends wepy.page {
   config = {
-    navigationBarTitleText: '政策法规',
+    navigationBarTitleText: '以案说法',
     navigationBarTextStyle: 'white',
     backgroundTextStyle: 'dark',
     navigationBarBackgroundColor: '#094baa',
@@ -111,12 +105,9 @@ export default class Law extends wepy.page {
     size: 20,
     items: [],
     currentContent:null,
-    defaultImg:'http://qn-zfw.yungoux.com/1571653250887.png'
+    defaultImg:'http://qn-zfw.yungoux.com/1571644746214.png'
   };
   methods = {
-    catchtouchmove(){
-
-    },
     onClose(){
       this.showModal = false;
     },
@@ -130,9 +121,9 @@ export default class Law extends wepy.page {
   async loadData(page, size) {
     if (this.load) return;
     this.load = true;
-    let res = await getLaws(page, size);
+    let res = await getBlacks(page, size, 1);
     res.info.records.map(e=>{
-        e.preContent = e.content.substring(0,40);
+        e.preContent = e.content.substring(0,300);
     });
     this.load = false;
     wepy.stopPullDownRefresh();

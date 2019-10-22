@@ -30,6 +30,15 @@
   margin-top: 20rpx;
 }
 
+.sign-pic{
+  background-color: white;
+  box-shadow: 0 0 20rpx 4rpx #e1e1e1;
+  border-radius: 10rpx;
+  width: 100%;
+  height: 450rpx;
+  margin-top: 20rpx;
+}
+
 .btn-clear {
   position: relative;
   left: 0;
@@ -56,7 +65,7 @@
   margin: auto;
   width: 40%;
   height: 80rpx;
-  background-color: #2f23d1;
+  background-color: #094baa;
   color: white;
   line-height: 80rpx;
   text-align: center;
@@ -65,39 +74,43 @@
 }
 
 .btn-save:active {
-  background-color: rgb(37, 27, 177);
+  background-color: #094191;
 }
 </style>
 <template>
     <view class="container">
         <view class="name">
             <text>昵称：</text>
-            <text placeholder="请输入真实姓名" class="input" placeholder-style="colro:#717171">{{userInfo.nick}}</text>
+            <text placeholder="请输入姓名" class="input" placeholder-style="colro:#717171">{{userInfo.nick}}</text>
         </view>
-        <text style="margin-top:40rpx;">签字板(手指签字)：</text>
-        <canvas id="canvas" class="canvas" canvas-id="signCanvas" @touchstart='touchstart' @touchmove='touchmove'></canvas>
-        <view class="btn-clear" @tap='clear'>清 空</view>
-        <view class="btn-save" @tap='submit'>提 交</view>
+        <image wx:if="{{signInfo}}" class="sign-pic" mode='asceptFill' src='{{signInfo.nameUrl}}'></image>
+        <view wx:else>
+            <text style="margin-top:40rpx;">签字板(手指签字)：</text>
+            <canvas id="canvas" class="canvas" canvas-id="signCanvas" @touchstart='touchstart' @touchmove='touchmove'></canvas>
+            <view class="btn-clear" @tap='clear'>清 空</view>
+            <view class="btn-save" @tap='submit'>提 交</view>
+        </view>
     </view>
 </template>
 <script>
 import wepy from 'wepy';
 import {UploadSingle} from '../utils/uploader';
-import {addSign} from '../utils/api';
+import {addSign,getMySelfSign} from '../utils/api';
 
 export default class Sign extends wepy.page {
   config = {
     navigationBarTitleText: '反邪防邪签字',
     navigationBarTextStyle: 'white',
     backgroundTextStyle: 'dark',
-    navigationBarBackgroundColor: '#2F23D1',
+    navigationBarBackgroundColor: '#094baa',
     disableScroll: true
   };
   data = {
     context: null,
     width: 0,
     height: 0,
-    userInfo: null
+    userInfo: null,
+    signInfo:null,
   };
   methods = {
     touchstart(e) {
@@ -121,8 +134,8 @@ export default class Sign extends wepy.page {
           canvasId:'signCanvas',
           width:self.width,
           height:self.height,
-          destWidth:200,
-          destHeight:100,
+          destWidth:400,
+          destHeight:300,
           fileType:'jpg',
           success(res){
               UploadSingle(res.tempFilePath,
@@ -153,8 +166,13 @@ export default class Sign extends wepy.page {
     }
   };
 
-  onLoad() {
+  async onLoad() {
     this.userInfo = wx.getStorageSync('login_user');
+    let res = await getMySelfSign(this.userInfo.id);
+    if(res.status===1&&res.info){
+      this.signInfo = res.info;
+    }
+    this.$apply();
     this.context = wx.createCanvasContext('signCanvas');
     let query = wx.createSelectorQuery();
     query.select('#canvas').boundingClientRect();

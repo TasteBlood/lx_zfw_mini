@@ -109,14 +109,14 @@
             <view class="label" style="align-items:center;display:flex;flex-direction:row;justify-content:space-between;">
                 <text>举报事件：</text>
                 <view>
-                    <view style="text-align:right;color:#3CAE34;font-size:30rpx;" wx:if='{{item.state===2}}'>已反馈</view>
+                    <view style="text-align:right;color:#3CAE34;font-size:30rpx;" wx:if='{{item.state===1}}'>已反馈</view>
                     <view style="text-align:right;color:#515151;font-size:30rpx" wx:else>未反馈</view>
                 </view>
             </view>
             <view style="margin-top:20rpx;">{{pass.content}}</view>
             <view class="label" style="margin-top:40rpx;">语音留言：</view>
             <view class="btn-play" @tap='onPlayClick' style="margin-top:20rpx;" wx:if='{{pass.soundRecord}}'>
-                <image src='../res/ic_voice.png' class="icon-36" mode='asceptFill'></image>
+                <image src='../res/ic_voice.png' class="icon-36" mode='aspectFill'></image>
                 <text style="margin-left:20rpx;">播放录音文件</text>
             </view>
             <view style="margin-top:20rpx;" wx:else>无录音信息</view>
@@ -143,7 +143,7 @@ export default class JubaoDetail extends wepy.page {
     navigationBarTitleText: '举报详情',
     navigationBarTextStyle: 'white',
     backgroundTextStyle: 'dark',
-    navigationBarBackgroundColor: '#2F23D1'
+    navigationBarBackgroundColor: '#094baa'
   };
   data = {
       pass:null,

@@ -1,0 +1,145 @@
+<style lang="less" scoped>
+    .top-view{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 20rpx;
+        align-items: center;
+        background-color: white;
+    }
+
+    .item{
+        display: flex;
+        flex-direction: column;
+        padding: 20rpx;
+        margin-bottom: 2rpx;
+        .top-line{
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+
+          .time{
+            background-color: #094baa;
+            padding: 5rpx;
+            border-radius: 8rpx;
+            font-size: 28rpx;
+            color:white;
+          }
+        }
+        .content{
+          background-color: white;
+          padding: 20rpx;
+          margin-top: 10rpx;
+          border-radius: 8rpx;
+          word-wrap: none;
+          word-break: normal;
+        }
+    }
+
+    .left-view{
+        display: flex;
+        flex-direction: column;
+    }
+    .info{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    .date{
+        padding:5rpx;
+        display:flex;
+        flex-direction:row;
+        align-items:center
+    }
+    .date:active{
+        background-color: #f1f1f1;
+    }
+</style>
+<template>
+    <view class="container">
+        <view class="list">
+            <view class="item" wx:for='{{items}}' wx:key='{{index}}'>
+                <view class="top-line">
+                  <view class="time">{{item.date}}</view>
+                  <!-- <view style="display:flex;flex-direction:row;align-items:center">
+                    <image src='../res/ic_record.png' class="icon-36"></image>
+                    <text style="margin-left:10rpx;font-size:30rpx;color:#515151">积分:+20</text>
+                  </view> -->
+                </view>
+                <view class="content">
+                  {{item.content}}
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+import { getRewards} from '../utils/api';
+export default class ScoreHistory extends wepy.page {
+  config = {
+    navigationBarTitleText: '奖励内容',
+    navigationBarTextStyle: 'white',
+    backgroundTextStyle: 'dark',
+    navigationBarBackgroundColor: '#094baa',
+    enablePullDownRefresh: true
+  };
+  data = {
+    showModal: false,
+    load: false,
+    noMore: false,
+    page: 1,
+    size: 20,
+    items: [],
+    user: null,
+    testNum:10
+  };
+  methods = {
+      onDateChange(e){
+          this.selectDate = e.detail.value;
+          this.page = 1;
+          this.loadData(this.page,this.size,this.selectDate);
+      }
+  };
+
+  async loadData(page, size,selectDate) {
+    if (this.load) return;
+    this.load = true;
+    let res = await getRewards(page, size, this.user.id);
+    this.load = false;
+    wepy.stopPullDownRefresh();
+    res.info.records.map(e=>{
+      e.date = e.createTime.split(' ')[0];
+    });
+    if (page === 1) {
+      this.items = res.info.records;
+      this.noMore = false;
+    } else {
+      this.items.concat(res.info.records);
+      if (res.info.totalpage === page) {
+        this.noMore = true;
+      } else {
+        this.noMore = false;
+        this.page++;
+      }
+    }
+    this.$apply();
+  }
+
+  async onLoad() {
+    // load score info
+    this.user = wx.getStorageSync('login_user');
+    this.loadData(this.page, this.size);
+  }
+
+  onPullDownRefresh() {
+    this.page = 1;
+    this.loadData(this.page, this.size);
+  }
+
+  onReachBottom() {
+    if (this.noMore) return;
+    this.loadData(this.page, this.size);
+  }
+}
+</script>

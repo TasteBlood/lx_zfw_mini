@@ -104,6 +104,20 @@ export const getXieJiaos = async (pageNum,pageSize) => {
 
 /**
  * 
+ * @param {Number} pageNum 
+ * @param {Number} pageSize 
+ * @description 查询维护稳定
+ */
+export const getWeiWeng = async (pageNum,pageSize) => {
+    try {
+        return await post('/wx/querySteady',{pageNum,pageSize},true)        
+    } catch (error) {
+        return error
+    }
+};
+
+/**
+ * 
  * @param {String} name 
  * @param {String} nameUrl 
  * @param {Number} userId 
@@ -114,6 +128,18 @@ export const addSign = async (name,nameUrl,userId) => {
         return await post('/wx/addAutograph',{name,nameUrl,userId},true)
     } catch (error) {
         return error
+    }
+};
+
+/**
+ * @description 查询自己的签名信息
+ * @param {Number} userId 
+ */
+export const getMySelfSign = async (userId) => {
+    try {
+        return await post('/wx/queryAutographById',{userId},true)
+    } catch (error) {
+        return error;
     }
 };
 
@@ -152,5 +178,118 @@ export const signNote = async (integralRuleId,userId) =>{
         return await post('/wx/addRecord',{integralRuleId,userId},true);
     } catch (error) {
         return error;
+    }
+};
+
+/**
+ * 
+ * @param {Number} pageNum 
+ * @param {Number} pageSize 
+ * @param {Number} userId
+ * @param {String} startTime 
+ * @description 查询积分来源
+ */
+export const getScoreHistory = async (pageNum,pageSize,userId,startTime) => {
+    try {
+        return await post('/wx/queryIntegralRecord',{pageNum,pageSize,userId,startTime},true)
+    } catch (error) {
+        return error
+    }
+};
+
+/**
+ * @description 查询积分消费记录
+ * @param {Number} pageNum 
+ * @param {Number} pageSize 
+ * @param {Number} userId 
+ * @param {Number} startTime 
+ */
+export const getScoreConsum = async (pageNum,pageSize,userId,startTime) => {
+    try {
+        return await post('/wx/queryIntegralConsum',{pageNum,pageSize,userId,startTime},true)
+    } catch (error) {
+        return error
+    }
+};
+
+/**
+ * @description 查询个人积分总额
+ * @param {Number} userId 
+ */
+export const getTotalScore = async (userId) => {
+    try {
+        return await get('/wx/getIntegralTotal',{userId},false);
+    } catch (error) {
+        return error
+    }
+};
+
+/**
+ * @description 查询消费总额
+ * @param {Number} userId 
+ */
+export const getTotalConsum = async (userId) => {
+    try {
+        return await get('/wx/getConsumIntegralInfo',{userId},true)
+    } catch (error) {
+        return error
+    }
+};
+
+/**
+ * @description 查询奖励内容
+ * @param {Number} pageNum 
+ * @param {Number} pageSize 
+ * @param {Number} userId 
+ */
+export const getRewards = async (pageNum,pageSize,userId) => {
+    try {
+        return await post('/wx/queryUserRewardInfo',{pageNum,pageSize,userId},true)
+    } catch (error) {
+        return error
+    }
+};
+
+/**
+ * @description 查询举报反馈
+ * @param {Number} pageNum 
+ * @param {Number} pageSize 
+ * @param {Number} userId 
+ */
+export const getFeedback = async (pageNum,pageSize,userId) => {
+    try {
+        return await post('/wx/queryFeedback',{pageNum,pageSize,userId},true)
+    } catch (error) {
+        return error
+    }
+};
+
+/**
+ * @description 查询扫黑除恶内容
+ * @param {*} pageNum 
+ * @param {*} pageSize 
+ * @param {*} type 类型 1 以案说法 2 庭审现场 3 知识点
+ */
+export const getBlacks = async (pageNum,pageSize,type) => {
+    try {
+        return await post('/wx/queryBlack',{pageNum,pageSize,type},true)
+    } catch (error) {
+        return error
+    }
+};
+
+
+/**
+ * @description 查询扫黑除恶内容
+ * @param {*} pageNum 
+ * @param {*} pageSize 
+ * @param {String} title 关键字查询
+ * @param {*} type 类型 1 以案说法 2 庭审现场 3 知识点
+ */
+export const getBlacksBySearch = async (pageNum,pageSize,title,type) => {
+    try {
+        return await post('/wx/queryBlack',{pageNum,pageSize,title,type},true)
+    } catch (error) {
+        return error
     }
 };

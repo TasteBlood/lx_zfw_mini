@@ -1,0 +1,105 @@
+<style lang="less" scoped>
+.list {
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx;
+}
+.item {
+  padding: 20rpx;
+  background-color: white;
+  border-radius: 10rpx;
+  position: relative;
+  box-shadow: 0rpx 2rpx 10rpx 4rpx #e1e1e1;
+  margin-bottom: 20rpx;
+}
+
+.pic {
+  width: 100%;
+  height: 340rpx;
+}
+
+.play-pic {
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  width: 100rpx;
+  height: 100rpx;
+  margin: auto;
+}
+.title {
+  text-align: center;
+  margin-top: 10rpx;
+  color: #094baa;
+  font-size: 32rpx;
+}
+</style>
+<template>
+    <view class="list">
+        <view class="item" wx:for="{{items}}" wx:key='{{index}}'>
+            <image src='http://qn-zfw.yungoux.com/1571657558368.png' class="pic" mode='asceptFill'></image>
+            <image @tap='skipToPlay' src='../res/play.png' data-item="{{item}}" class="play-pic" style="width:100rpx;height:100rpx;"></image>
+            <view class="title">{{item.title}}</view>
+        </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+import { getBlacks } from '../utils/api';
+export default class TSXC extends wepy.page {
+  config = {
+    navigationBarTitleText: '庭审现场',
+    navigationBarTextStyle: 'white',
+    backgroundTextStyle: 'dark',
+    navigationBarBackgroundColor: '#094baa',
+    enablePullDownRefresh: true
+  };
+  data = {
+    load: false,
+    noMore: false,
+    page: 1,
+    size: 20,
+    items: []
+  };
+  methods = {
+    skipToPlay(e) {
+      wepy.$instance.data.video = e.currentTarget.dataset.item.content.split(
+        ';'
+      );
+      wepy.navigateTo({ url: './play' });
+    }
+  };
+  async loadData(page, size) {
+    if (this.load) return;
+    this.load = true;
+    let res = await getBlacks(page, size, 2);
+    this.load  = false;
+    wepy.stopPullDownRefresh();
+    if (page === 1) {
+      this.items = res.info.records;
+      this.noMore = false;
+    } else {
+      this.items.concat(res.info.records);
+      if (res.info.totalpage === page) {
+        this.noMore = true;
+      } else {
+        this.noMore = false;
+        this.page++;
+      }
+    }
+    this.$apply();
+  };
+  onLoad(){
+      this.loadData(this.page,this.size)
+  };
+  onPullDownRefresh() {
+      this.page = 1;
+      this.loadData(this.page,this.size)
+  }
+  onReachBottom() {
+      if(this.noMore)return;
+      this.loadData(this.page,this.size);
+  }
+}
+</script>

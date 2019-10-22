@@ -43,26 +43,25 @@ swiper {
   justify-content: space-between;
 }
 
-.modal {
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  position: fixed;
-  z-index: 10;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-
-  .content {
-    background-color: white;
+.modal{
+    left:0;
+    top:0;
     width: 100%;
     height: 100%;
-    padding: 40rpx 20rpx 20rpx 20rpx;
-    overflow-y: scroll;
-  }
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    z-index: 10;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    .article{
+        background-color: white;
+        width: 100%;
+        padding: 40rpx 20rpx 20rpx 20rpx;
+        box-sizing: border-box;
+    }
 }
 
 .left-view {
@@ -103,12 +102,11 @@ swiper {
 <template>
     <view class="container">
         <view class="top-pic">
-          <swiper previous-margin='10rpx' next-margin='220rpx' class="left-view" autoplay circular interval='2000' vertical='true'>
+          <swiper previous-margin='10rpx' next-margin='200rpx' class="left-view" autoplay circular interval='2000' vertical='true'>
               <block wx:for="{{signs}}" wx:key="{{index}}">
                   <swiper-item>
                     <view style="display:flex;flex-direction:row;align-items:flex-end;">
-                      <text style="color:#414141;">{{item.name}}</text>
-                      <text style="color:#717171;font-style:italic;font-size:26rpx;margin-left:8rpx;">{{item.date}}签字</text>
+                      <text>{{item.name}}<text style="color:#717171;font-size:26rpx;"> 参与签字</text></text>
                     </view>
                   </swiper-item>
               </block>
@@ -122,22 +120,24 @@ swiper {
             <block wx:for="{{items}}" wx:key="{{index}}">
                 <view class="item" @tap='onItemClick' data-item='{{item}}'>
                     <view class="content">
-                        <text class="title single-line">{{item.title}}</text>
-                        <rich-text nodes='{{item.preContent}}' class="multi-line" style="font-size:30rpx;color:#0D0D0D;margin-top:10rpx;"></rich-text>
+                        <text class="title multi-line">{{item.title}}</text>
+                        <!-- <rich-text nodes='{{item.preContent}}' class="multi-line" style="font-size:30rpx;color:#0D0D0D;margin-top:10rpx;"></rich-text> -->
                     </view>
-                    <image mode='asceptFill' style="width:220rpx;height:160rpx;" src="{{item.img?item.img:'../res/img_error.png'}}"></image>
+                    <image mode='aspectFill' style="width:220rpx;height:160rpx;" src="{{item.img?item.img:defaultImg}}"></image>
                 </view>
             </block>
         </view>
-        <view class="modal" wx:if='{{showModal}}'>
-            <view class="content">
-                <view>
-                    <view style="text-align:right">
-                      <image src='../res/close.png' class="icon-48" @tap='onClose'></image>
-                    </view>
-                    <rich-text nodes='{{currentContent}}' style="margin-top:60rpx;line-height:50rpx;text-indent:80rpx;"></rich-text>
-                </view>
-            </view>
+        <view class="modal" wx:if='{{showModal}}' catchtouchmove="catchtouchmove">
+            <scroll-view scroll-y flex-enable style="width:100%;height:100%;background-color:white">
+                <view class="article">
+                  <view>
+                      <view style="text-align:right">
+                        <image src='../res/close.png' class="icon-48" @tap='onClose'></image>
+                      </view>
+                      <rich-text nodes='{{currentContent}}' style="margin-top:60rpx;margin-bottom:20rpx;line-height:50rpx;text-indent:80rpx;"></rich-text>
+                  </view>
+              </view>
+            </scroll-view>
         </view>
     </view>
 </template>
@@ -149,7 +149,7 @@ export default class Law extends wepy.page {
     navigationBarTitleText: '反邪防邪',
     navigationBarTextStyle: 'white',
     backgroundTextStyle: 'dark',
-    navigationBarBackgroundColor: '#2F23D1',
+    navigationBarBackgroundColor: '#094baa',
     enablePullDownRefresh: true
   };
   data = {
@@ -162,9 +162,13 @@ export default class Law extends wepy.page {
     items: [],
     signs:[],
     currentContent: null,
-    user: null
+    user: null,
+    defaultImg:'http://qn-zfw.yungoux.com/1571653491331.png'
   };
   methods = {
+    catchtouchmove(){
+
+    },
     onClose() {
       this.showModal = false;
     },
@@ -187,7 +191,7 @@ export default class Law extends wepy.page {
           cancelText: '取消', //取消按钮的文字，默认为取消，最多 4 个字符,
           cancelColor: '#000000', //取消按钮的文字颜色,
           confirmText: '确定', //确定按钮的文字，默认为取消，最多 4 个字符,
-          confirmColor: '#2F23D1', //确定按钮的文字颜色,
+          confirmColor: '#094baa', //确定按钮的文字颜色,
           success: res => {
             if (res.confirm) {
               wepy.switchTab({ url: './mine' });

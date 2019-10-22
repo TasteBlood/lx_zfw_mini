@@ -1,5 +1,5 @@
 const BASE_URL = "http://192.168.31.160:8086";
-// const BASE_URL = "https://wuye-service-landa.lz-cc.com";
+// const BASE_URL = "https://zfw-service.yungoux.com";
 
 
 // get request 
@@ -37,8 +37,12 @@ const GET = async (url, params, loading) => {
                             //     icon: 'none'
                             // })
                             wx.removeStorageSync('login_user')
+                            wx.showToast({
+                                title: '登录已过期',
+                                icon: 'none'
+                            });
                             setTimeout(() => {
-                                wepy.switchTab({ url: '../mine' });
+                                wx.switchTab({ url: '../pages/mine' });
                             }, 500);
                         } else {
                             if(url.indexOf('findIsOrder')===-1){
@@ -112,9 +116,12 @@ const POST = async (url, params, loading) => {
                             //     icon: 'none'
                             // })
                             wx.removeStorageSync('login_user')
+                            wx.showToast({
+                                title: '登录已过期',
+                                icon: 'none'
+                            });
                             setTimeout(() => {
-                                wepy.switchTab({ url: '../mine' });
-                                
+                                wx.switchTab({ url: '../pages/mine' });
                             }, 500);
                         } else {
                             wx.showToast({

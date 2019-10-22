@@ -1,0 +1,145 @@
+<style lang="less" scoped>
+    .top-view{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 20rpx;
+        align-items: center;
+        background-color: white;
+    }
+
+    .list{
+        margin-top: 20rpx;
+    }
+
+    .item{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20rpx;
+        background-color: white;
+        margin-bottom: 2rpx;
+    }
+
+    .left-view{
+        display: flex;
+        flex-direction: column;
+    }
+    .info{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    .date{
+        padding:5rpx;
+        display:flex;
+        flex-direction:row;
+        align-items:center
+    }
+    .date:active{
+        background-color: #f1f1f1;
+    }
+</style>
+<template>
+    <view class="container">
+        <view class="top-view">
+            <picker mode='date' fields='month' start='2019-01-01' end='{{end}}' @change='onDateChange'>
+                <view class='date'>
+                    <text>{{selectDate}}</text>
+                    <image src='../res/ic_dropdown.png' class="icon-48"></image>    
+                </view>
+            </picker>
+            <view class="info">
+                <view style="color:#094baa">总支出:{{scoreInfo.allConsumIntegral}}</view>
+                <view style="color:#E7251E;margin-top:10rpx;">今日支出:{{scoreInfo.sameDayIntergral}}</view>
+            </view>
+        </view>
+        <view class="list">
+            <view class="item" wx:for='{{items}}' wx:key='{{index}}'>
+                <view class="left-view">
+                    <text>{{item.content}}</text>
+                    <text style="margin-top:10rpx;font-size:30rpx;color:#717171">{{item.createTime}}</text>
+                </view>
+                <view><text style="color:#E7251E;margin-right:10rpx;">-{{item.integral}}</text>积分</view>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+import { getScoreConsum,getTotalConsum} from '../utils/api';
+export default class ScoreHistory extends wepy.page {
+  config = {
+    navigationBarTitleText: '积分消费',
+    navigationBarTextStyle: 'white',
+    backgroundTextStyle: 'dark',
+    navigationBarBackgroundColor: '#094baa',
+    enablePullDownRefresh: true
+  };
+  data = {
+    showModal: false,
+    load: false,
+    noMore: false,
+    page: 1,
+    size: 20,
+    items: [],
+    user: null,
+    end:null,
+    selectDate:null,
+    scoreInfo:null,
+  };
+  methods = {
+      onDateChange(e){
+          this.selectDate = e.detail.value;
+          this.page = 1;
+          this.loadData(this.page,this.size,this.selectDate);
+      }
+  };
+
+  async loadData(page, size,selectDate) {
+    if (this.load) return;
+    this.load = true;
+    let res = await getScoreConsum(page, size, this.user.id,selectDate);
+    this.load = false;
+    wepy.stopPullDownRefresh();
+    if (page === 1) {
+      this.items = res.info.records;
+      this.noMore = false;
+    } else {
+      this.items.concat(res.info.records);
+      if (res.info.totalpage === page) {
+        this.noMore = true;
+      } else {
+        this.noMore = false;
+        this.page++;
+      }
+    }
+    this.$apply();
+  }
+
+  async onLoad() {
+    // load score info
+    let date =  new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth()+1;
+    let day = date.getDate();
+    this.end = year+'-'+month+'-'+day;
+    this.selectDate = year +'-'+month;
+    this.user = wx.getStorageSync('login_user');
+    let res = await getTotalConsum(this.user.id);
+    this.scoreInfo = res.info;
+    this.loadData(this.page, this.size,this.selectDate);
+  }
+
+  onPullDownRefresh() {
+    this.page = 1;
+    this.loadData(this.page, this.size,this.selectDate);
+  }
+
+  onReachBottom() {
+    if (this.noMore) return;
+    this.loadData(this.page, this.size),this.selectDate;
+  }
+}
+</script>

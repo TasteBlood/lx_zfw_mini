@@ -1,7 +1,7 @@
 {
   "name": "lz_zfw_mini",
   "version": "0.0.2",
-  "description": "兰州政法委小程序",
+  "description": "云政法",
   "main": "dist/app.js",
   "scripts": {
     "dev": "wepy build --watch",

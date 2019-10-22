@@ -19,13 +19,13 @@ page {
 }
 
 .btn-primary {
-  background-color: #2f23d1;
+  background-color: #094baa;
   color: white;
   box-shadow: 0 4rpx 10rpx 10rpx #f1f1f1;
 }
 
 .btn-primary:active {
-  background-color: rgb(35, 25, 168);
+  background-color: #07408f;
 }
 
 .single-line {
@@ -52,37 +52,57 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
-      'pages/sign',
+      'pages/tsxc',
+      'pages/play',
+      
+      'pages/saohei_case_to_law',
+      'pages/saohei_knowlage',
+      'pages/jubao_feedback',
       'pages/xiejiao',
+
+      'pages/jiangli',
+      'pages/score_consum',
+      'pages/weiweng',
+      'pages/score_history',
+      'pages/sign',
+      
       'pages/shiyuzhili',
       'pages/law',
       'pages/jubao_record',
       'pages/jubao_detail',
       'pages/saohei_index',
+      'pages/saohei_index_main',
       'pages/saohei_confirm',
       'pages/saohei_jubao',
       'pages/location',
       'pages/score_note',
       'pages/mine',
       'pages/about',
+      
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: '兰州政法委小程序',
+      navigationBarTitleText: '云政法',
       navigationBarTextStyle: 'black'
     },
     tabBar: {
-      color: '#2A176F',
-      selectedColor: '#ffffff',
-      backgroundColor: '#2F23D1',
-      borderStyle: 'white',
+      color: '#094BAA',
+      selectedColor: '#094BAA',
+      backgroundColor: '#ffffff',
+      borderStyle: "black",
       list: [
         {
           pagePath: 'pages/index',
           text: '首页',
           iconPath: './res/home.png',
           selectedIconPath: './res/home_selected.png'
+        },
+        {
+          pagePath: 'pages/saohei_index_main',
+          text: '扫黑除恶',
+          iconPath: './res/saohei.png',
+          selectedIconPath: './res/saohei_selected.png'
         },
         {
           pagePath: 'pages/mine',
@@ -102,13 +122,11 @@ export default class extends wepy.app {
   //程序运行中的数据缓存
   data = {};
 
-  onLoad() {
-    
-  }
+  onLoad() {}
 
   onLaunch() {}
 
-  onShow(){
+  onShow() {
     //检查版本
     const updateManager = wx.getUpdateManager();
     updateManager.onCheckForUpdate(function(res) {

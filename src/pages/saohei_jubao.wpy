@@ -54,7 +54,7 @@ radio-group {
   height: 80rpx;
   text-align: center;
   line-height: 80rpx;
-  background-color: #2f23d1;
+  background-color: #094baa;
   border-radius: 10rpx;
   color: white;
   position: relative;
@@ -67,7 +67,7 @@ radio-group {
 }
 
 .btn-submit:active {
-  background-color: rgb(41, 31, 180);
+  background-color: #073c86;
 }
 
 .record-panel {
@@ -129,8 +129,8 @@ radio-group {
       style="display:flex;display-direction:row;justify-content:center;"
       @change="onChange"
     >
-      <radio checked="true" color="#2F23D1" value="1">匿名举报</radio>
-      <radio style="margin-left:100rpx" color="#2F23D1" value="2">实名举报</radio>
+      <radio checked="true" color="#094baa" value="1">匿名举报</radio>
+      <radio style="margin-left:100rpx" color="#094baa" value="2">实名举报</radio>
     </radio-group>
     <view class="pass-extra" wx:if="{{passType===2}}">
       <view class="input-line">
@@ -223,7 +223,7 @@ export default class SaoHeiJuBao extends wepy.page {
   config = {
     navigationBarTitleText: '兰州市扫黑除恶举报',
     navigationBarTextStyle: 'white',
-    navigationBarBackgroundColor: '#2F23D1',
+    navigationBarBackgroundColor: '#094baa',
     disableScroll: false
   };
   components = {

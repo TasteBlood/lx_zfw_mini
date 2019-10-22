@@ -35,52 +35,85 @@
   justify-content: space-between;
 }
 
-.modal{
-    left:0;
-    top:0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    position: fixed;
-    z-index: 10;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+.modal {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 
-    .content{
-        background-color: white;
-        width: 100%;
-        height: 100%;
-        padding: 40rpx 20rpx 20rpx 20rpx;
-        overflow-y: scroll;
-    }
+  .article {
+    width: 100%;
+    padding: 40rpx 20rpx 20rpx 20rpx;
+    box-sizing: border-box;
+  }
 }
 
+.video-item {
+  padding: 20rpx;
+  background-color: white;
+  border-radius: 10rpx;
+  position: relative;
+  box-shadow: 0rpx 2rpx 10rpx 4rpx #e1e1e1;
+  .pic {
+    width: 100%;
+    height: 340rpx;
+  }
+
+  .play-pic {
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    width: 100rpx;
+    height: 100rpx;
+    margin: auto;
+  }
+  .title {
+    text-align: center;
+    margin-top: 10rpx;
+    color: #f02e28;
+    font-size: 32rpx;
+  }
+}
 </style>
 <template>
     <view class="container">
-        <image src='http://qn-zfw.yungoux.com/1570859379587.png' class="top-pic" mode='asceptFill'></image>
+        <image src='http://qn-zfw.yungoux.com/1570859379587.png' class="top-pic" mode='aspectFill'></image>
         <view class="list">
             <block wx:for="{{items}}" wx:key="{{index}}">
-                <view class="item" @tap='onItemClick' data-item='{{item}}'>
+                <view class="item" @tap='onItemClick' data-item='{{item}}' wx:if="{{item.type===1}}">
                     <view class="content">
-                        <text class="title single-line">{{item.title}}</text>
-                        <rich-text nodes='{{item.preContent}}' class="multi-line" style="font-size:30rpx;color:#0D0D0D;margin-top:10rpx;"></rich-text>
+                        <text class="title multi-line">{{item.title}}</text>
+                        <!-- <rich-text nodes='{{item.preContent}}' class="multi-line" style="font-size:30rpx;color:#0D0D0D;margin-top:10rpx;"></rich-text> -->
                     </view>
-                    <image mode='asceptFill' style="width:220rpx;height:160rpx;" src="{{item.img?item.img:'../res/img_error.png'}}"></image>
+                    <image lazy-load mode='asceptFill' style="width:220rpx;height:160rpx;" src="{{item.img?item.img:defaultImg}}"></image>
                 </view>
+                <view class="video-item" wx:elif="{{item.type===2}}">
+                  <image src='http://qn-zfw.yungoux.com/1571725703830.png' class="pic" mode='asceptFill'></image>
+                  <image @tap='onItemClick' data-item='{{item}}' src='../res/play.png' class="play-pic" style="width:100rpx;height:100rpx;"></image>
+                  <view class="title">{{item.title}}</view>
+              </view>
             </block>
         </view>
-        <view class="modal" wx:if='{{showModal}}'>
-            <view class="content">
-                <view>
-                    <view style="text-align:right">
-                      <image src='../res/close.png' class="icon-48" @tap='onClose'></image>
+        <view class="modal" wx:if='{{showModal}}' catchtouchmove="catchtouchmove">
+            <scroll-view scroll-y flex-enable style="width:100%;height:100%;background-color:white;">
+                  <view class="article">
+                    <view>
+                        <view style="text-align:right">
+                          <image src='../res/close.png' class="icon-48" @tap='onClose'></image>
+                        </view>
+                        <rich-text nodes='{{currentContent}}' style="margin-top:60rpx;line-height:50rpx;text-indent:80rpx;"></rich-text>
                     </view>
-                    <rich-text nodes='{{currentContent}}' style="margin-top:60rpx;line-height:50rpx;text-indent:80rpx;"></rich-text>
-                </view>
-            </view>
+                  </view>
+            </scroll-view>
         </view>
     </view>
 </template>
@@ -92,26 +125,40 @@ export default class Law extends wepy.page {
     navigationBarTitleText: '市域治理',
     navigationBarTextStyle: 'white',
     backgroundTextStyle: 'dark',
-    navigationBarBackgroundColor: '#2F23D1',
+    navigationBarBackgroundColor: '#094baa',
     enablePullDownRefresh: true
   };
   data = {
-    showModal:false,
+    showModal: false,
     load: false,
     noMore: false,
     page: 1,
     size: 20,
     items: [],
-    currentContent:null,
+    currentContent: null,
+    defaultImg: 'http://qn-zfw.yungoux.com/1571654355804.png'
   };
   methods = {
-    onClose(){
+    catchtouchmove() {},
+    skipToPlay() {
+      wepy.$instance.data.video = this.video;
+      wepy.navigateTo({ url: './play' });
+    },
+    onClose() {
       this.showModal = false;
     },
-    onItemClick(e){
-      this.currentContent = e.currentTarget.dataset.item.content;
-      this.currentContent = this.currentContent.replace('<img','<img style="width:80%" ');
-      this.showModal = true;
+    onItemClick(e) {
+      if (e.currentTarget.dataset.item.type === 1) {
+        this.currentContent = e.currentTarget.dataset.item.content;
+        this.currentContent = this.currentContent.replace(
+          '<img',
+          '<img style="width:80%" '
+        );
+        this.showModal = true;
+      } else if (e.currentTarget.dataset.item.type === 2) {
+        wepy.$instance.data.video = e.currentTarget.dataset.item.content.split(';');
+        wepy.navigateTo({ url: './play' });
+      }
     }
   };
 
@@ -119,8 +166,8 @@ export default class Law extends wepy.page {
     if (this.load) return;
     this.load = true;
     let res = await getAreas(page, size);
-    res.info.records.map(e=>{
-        e.preContent = e.content.substring(0,40);
+    res.info.records.map(e => {
+      e.preContent = e.content.substring(0, 40);
     });
     this.load = false;
     wepy.stopPullDownRefresh();

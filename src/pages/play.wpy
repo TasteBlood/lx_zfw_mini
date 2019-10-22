@@ -1,0 +1,89 @@
+<style lang="less" scoped>
+.container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}
+.video-list{
+    width: 100%;
+    height: 60%;
+    overflow-y: scroll;
+}
+
+.item{
+    background-color: white;
+    padding: 20rpx;
+    border-bottom: 2rpx solid #f1f1f1;
+    display: flex;
+    flex-direction: column;
+}
+
+.item:active{
+    background-color: #f1f1f1;
+}
+.item.active{
+    color: #094baa;
+}
+.desc{
+    color: #717171;
+    font-size: 28rpx;
+    margin-top: 10rpx;
+}
+</style>
+<template>
+    <view class="container">
+        <video bindended='onVideoEnd' src='{{videoSrc}}' autoplay style="width:100%;height:40%;">暂时无法播放</video>
+        <view class="video-list">
+            <view class="item {{current===index?'active':''}}" @tap='onItemClick' data-index="{{index}}" wx:for="{{video}}" wx:key="{{index}}">
+                视频片段{{index+1}}
+                <text class="desc">{{item}}</text>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+export default class Play extends wepy.page {
+  config = {
+    navigationBarTitleText: '播放',
+    navigationBarTextStyle: 'white',
+    backgroundTextStyle: 'dark',
+    navigationBarBackgroundColor: '#094baa',
+    enablePullDownRefresh: false,
+    disableScroll:true
+  };
+  data = {
+      video:[],
+      videoSrc:'',
+      current:0,
+  };
+  methods = {
+      onItemClick(e){
+          this.videoSrc = this.video[Number.parseInt(e.currentTarget.dataset.index)];
+          this.current =  Number.parseInt(e.currentTarget.dataset.index);     
+      },
+      onVideoEnd(){
+          this.current ++;
+          if(this.current>=this.video.length){
+              this.current = 0;
+              this.videoSrc = this.video[0];
+          }else{
+              this.videoSrc = this.video[this.current];
+          }
+      }
+  };
+  onLoad() {
+      this.video = wepy.$instance.data.video;
+      //默认播放第一个
+      this.videoSrc = this.video[0];
+  }
+
+  onUnload(){
+      wepy.$instance.data.video = null;
+  }
+}
+</script>
