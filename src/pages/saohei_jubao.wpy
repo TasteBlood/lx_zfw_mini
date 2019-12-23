@@ -497,7 +497,7 @@ export default class SaoHeiJuBao extends wepy.page {
     };
 
     qqMap = new QQMapSDK({
-      key: '6GWBZ-R3MWU-E72VP-BFPNG-TSFMO-CCBB2'
+      key: '73OBZ-LS66I-XWYG7-5TUZZ-TQU53-WVBSF'
     });
 
     this.date = new Date().format();
@@ -511,7 +511,7 @@ export default class SaoHeiJuBao extends wepy.page {
           var longitude = res.longitude;
           qqMap.reverseGeocoder({
             location: location,
-            sig: 'uRpgvFWuquCfkU1VLDMgUikmkYbpSGS',
+            sig: 'LDmoLTcOLmSI6Pp2mIPvwdJnPj3ICtzo',
             success: res => {
               //console.log(res);
               self.address = res.result.address;

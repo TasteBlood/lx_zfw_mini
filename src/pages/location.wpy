@@ -147,7 +147,7 @@ export default class Location extends wepy.page {
       //反地理编码，将数据返回
       qqMap.reverseGeocoder({
         location:location,
-        sig: 'uRpgvFWuquCfkU1VLDMgUikmkYbpSGS',
+        sig: 'LDmoLTcOLmSI6Pp2mIPvwdJnPj3ICtzo',
         success:(res)=>{
           console.log(res);
           //debugger
@@ -174,7 +174,7 @@ export default class Location extends wepy.page {
       qqMap.geocoder({
         address: self.address,
         region: '兰州市',
-        sig: 'uRpgvFWuquCfkU1VLDMgUikmkYbpSGS',
+        sig: 'LDmoLTcOLmSI6Pp2mIPvwdJnPj3ICtzo',
         success: function(res) {
           if ('query ok' === res.message) {
             //geocode success
@@ -197,7 +197,7 @@ export default class Location extends wepy.page {
 
   onLoad() {
     qqMap = new QQMapSDK({
-      key: '6GWBZ-R3MWU-E72VP-BFPNG-TSFMO-CCBB2'
+      key: '73OBZ-LS66I-XWYG7-5TUZZ-TQU53-WVBSF'
     });
 
     let self = this;

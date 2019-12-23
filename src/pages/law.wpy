@@ -4,7 +4,7 @@
 }
 .top-pic {
   width: 100%;
-  height: 380rpx;
+  height: 240rpx;
   box-shadow: 0 4rpx 4rpx 6rpx #e1e1e1;
 }
 
@@ -35,37 +35,36 @@
   justify-content: space-between;
 }
 
-.modal{
-    left:0;
-    top:0;
+.modal {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  .bg {
     width: 100%;
     height: 100%;
     position: fixed;
-    z-index: 100;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+  }
 
-    .bg{
-      width: 100%;
-      height: 100%;
-      position: fixed;
-      background-color: rgba(0, 0, 0, 0.4);
-      z-index:-1;
-    }
-
-    .article{
-        background-color: white;
-        padding: 40rpx 20rpx 20rpx 20rpx;
-        box-sizing: border-box;
-    }
+  .article {
+    background-color: white;
+    padding: 40rpx 20rpx 20rpx 20rpx;
+    box-sizing: border-box;
+  }
 }
-
 </style>
 <template>
     <view class="container">
-        <image src='http://qn-zfw.yungoux.com/1570784594612.png' class="top-pic" mode='aspectFill'></image>
+        <image src='http://qn-zfw.yungoux.com/1571987861794.jpg' class="top-pic" mode='aspectFill'></image>
         <view class="list">
             <block wx:for="{{items}}" wx:key="{{index}}">
                 <view class="item" @tap='onItemClick' data-item='{{item}}'>
@@ -97,33 +96,36 @@ import wepy from 'wepy';
 import { getLaws } from '../utils/api';
 export default class Law extends wepy.page {
   config = {
-    navigationBarTitleText: '政策法规',
+    navigationBarTitleText: '法规条例',
     navigationBarTextStyle: 'white',
     backgroundTextStyle: 'dark',
     navigationBarBackgroundColor: '#094baa',
     enablePullDownRefresh: true
   };
   data = {
-    showModal:false,
+    showModal: false,
     load: false,
     noMore: false,
     page: 1,
     size: 20,
     items: [],
-    currentContent:null,
-    defaultImg:'http://qn-zfw.yungoux.com/1571653250887.png'
+    currentContent: null,
+    defaultImg: 'http://qn-zfw.yungoux.com/1571913849042.jpg'
   };
   methods = {
-    catchtouchmove(){
-
-    },
-    onClose(){
+    catchtouchmove() {},
+    onClose() {
       this.showModal = false;
     },
-    onItemClick(e){
+    onItemClick(e) {
       this.currentContent = e.currentTarget.dataset.item.content;
-      this.currentContent = this.currentContent.replace('<img','<img style="width:80%" ');
-      this.showModal = true;
+      this.currentContent = this.currentContent.replace(
+        '<img',
+        '<img style="width:80%" '
+      );
+      // this.showModal = true;
+      wepy.$instance.data.document = this.currentContent;
+      wepy.navigateTo({ url: './detail' });
     }
   };
 
@@ -131,21 +133,30 @@ export default class Law extends wepy.page {
     if (this.load) return;
     this.load = true;
     let res = await getLaws(page, size);
-    res.info.records.map(e=>{
-        e.preContent = e.content.substring(0,40);
+    res.info.records.map(e => {
+      e.preContent = e.content.substring(0, 40);
     });
     this.load = false;
     wepy.stopPullDownRefresh();
-    if (page === 1) {
+    if (res.info.totalpage === 1) {
       this.items = res.info.records;
-      this.noMore = false;
     } else {
-      this.items.concat(res.info.records);
-      if (res.info.totalpage === page) {
-        this.noMore = true;
-      } else {
-        this.noMore = false;
-        this.page++;
+      if (page === 1) {
+        this.items = res.info.records;
+        if (res.info.totalpage === page) {
+          this.noMore = true;
+        } else {
+          this.noMore = false;
+          this.page++;
+        }
+      }else{
+        this.items = this.items.concat(res.info.records);
+        if (res.info.totalpage === page) {
+          this.noMore = true;
+        } else {
+          this.noMore = false;
+          this.page++;
+        }
       }
     }
     this.$apply();

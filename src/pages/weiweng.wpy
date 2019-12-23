@@ -17,7 +17,7 @@
 }
 
 .title {
-  color: #f02e28;
+  color: #515151;
 }
 
 .content {
@@ -27,38 +27,38 @@
   flex-direction: column;
   justify-content: space-between;
 }
-.modal{
-    left:0;
-    top:0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    position: fixed;
-    z-index: 10;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+.modal {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 
-    .article{
-        background-color: white;
-        width: 100%;
-        padding: 40rpx 20rpx 20rpx 20rpx;
-        box-sizing: border-box;
-    }
+  .article {
+    background-color: white;
+    width: 100%;
+    padding: 40rpx 20rpx 20rpx 20rpx;
+    box-sizing: border-box;
+  }
 }
 .top-view {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 20rpx 20rpx 0 20rpx;
+  padding: 10rpx 20rpx 0 20rpx;
   align-items: center;
 }
 
 .top-pic {
-  width: 90%;
-  height: 300rpx;
-  margin-top: 20rpx;
+  width: 100%;
+  height: 240rpx;
+  box-shadow: 0 4rpx 4rpx 6rpx #e1e1e1;
 }
 
 .shadow-text {
@@ -66,21 +66,55 @@
   font-size: 42rpx;
   text-shadow: 0px 10px 6px rgba(125, 5, 5, 0.56);
 }
+.video-item {
+  padding: 20rpx;
+  background-color: white;
+  border-radius: 10rpx;
+  position: relative;
+  margin-bottom: 20rpx;
+  box-shadow: 0rpx 2rpx 10rpx 4rpx #e1e1e1;
+  .pic {
+    width: 100%;
+    height: 340rpx;
+  }
+
+  .play-pic {
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    width: 100rpx;
+    height: 100rpx;
+    margin: auto;
+  }
+  .title {
+    text-align: center;
+    margin-top: 10rpx;
+    color: #f02e28;
+    font-size: 32rpx;
+  }
+}
 </style>
 <template>
     <view class="container">
         <view class="top-view">
-            <text class="shadow-text">坚定不移维护社会稳定</text>
-            <image class="top-pic" src='http://qn-zfw.yungoux.com/1571016387424.png' mode='aspectFill'></image>
+            <!-- <text class="shadow-text">坚定不移维护社会稳定</text> -->
+            <image class="top-pic" src='http://qn-zfw.yungoux.com/1572228107486.png' mode='aspectFill'></image>
         </view>
         <view class="list">
             <block wx:for="{{items}}" wx:key="{{index}}">
-                <view class="item" @tap='onItemClick' data-item='{{item}}'>
+                <view class="item" @tap='onItemClick' wx:if="{{item.type===1}}" data-item='{{item}}'>
                     <view class="content">
-                        <text class="title single-line">{{item.title}}</text>
-                        <rich-text nodes='{{item.preContent}}' class="multi-line" style="font-size:30rpx;color:#0D0D0D;margin-top:10rpx;"></rich-text>
+                        <text class="title multi-line">{{item.title}}</text>
+                        <!-- <rich-text nodes='{{item.preContent}}' class="multi-line" style="font-size:30rpx;color:#0D0D0D;margin-top:10rpx;"></rich-text> -->
                     </view>
                     <image mode='aspectFill' style="width:220rpx;height:160rpx;" src="{{item.img?item.img:defaultImg}}"></image>
+                </view>
+                <view class="video-item" wx:elif="{{item.type===2}}">
+                    <image src='http://qn-zfw.yungoux.com/1576206873959.png' class="pic" mode='asceptFill'></image>
+                    <image @tap='onItemClick' data-item='{{item}}' src='../res/play.png' class="play-pic" style="width:100rpx;height:100rpx;"></image>
+                    <view class="title">{{item.title}}</view>
                 </view>
             </block>
         </view>
@@ -119,22 +153,27 @@ export default class WeiWeng extends wepy.page {
     items: [],
     currentContent: null,
     user: null,
-    defaultImg:'http://qn-zfw.yungoux.com/1571652794106.png'
+    defaultImg: 'http://qn-zfw.yungoux.com/1571914072034.jpg'
   };
   methods = {
-    catchtouchmove(){
-
-    },
+    catchtouchmove() {},
     onClose() {
       this.showModal = false;
     },
     onItemClick(e) {
-      this.currentContent = e.currentTarget.dataset.item.content;
-      this.currentContent = this.currentContent.replace(
-        '<img',
-        '<img style="width:80%" '
-      );
-      this.showModal = true;
+      if (e.currentTarget.dataset.item.type === 1) {
+        this.currentContent = e.currentTarget.dataset.item.content;
+        this.currentContent = this.currentContent.replace(
+          '<img',
+          '<img style="width:80%" '
+        );
+        //this.showModal = true;
+        wepy.$instance.data.document = this.currentContent;
+        wepy.navigateTo({ url: './detail' });
+      } else if (e.currentTarget.dataset.item.type === 2) {
+        wepy.$instance.data.video = e.currentTarget.dataset.item.content.split(';');
+        wepy.navigateTo({ url: './play' });
+      }
     }
   };
 
@@ -147,16 +186,25 @@ export default class WeiWeng extends wepy.page {
     });
     this.load = false;
     wepy.stopPullDownRefresh();
-    if (page === 1) {
+    if (res.info.totalpage === 1) {
       this.items = res.info.records;
-      this.noMore = false;
     } else {
-      this.items.concat(res.info.records);
-      if (res.info.totalpage === page) {
-        this.noMore = true;
+      if (page === 1) {
+        this.items = res.info.records;
+        if (res.info.totalpage === page) {
+          this.noMore = true;
+        } else {
+          this.noMore = false;
+          this.page++;
+        }
       } else {
-        this.noMore = false;
-        this.page++;
+        this.items = this.items.concat(res.info.records);
+        if (res.info.totalpage === page) {
+          this.noMore = true;
+        } else {
+          this.noMore = false;
+          this.page++;
+        }
       }
     }
     this.$apply();

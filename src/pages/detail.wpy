@@ -1,0 +1,28 @@
+<style lang="less" scoped>
+</style>
+<template>
+    <view style="padding:20rpx;">
+        <rich-text nodes='{{nodeData}}'></rich-text>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+export default class Detail extends wepy.page {
+  config = {
+    navigationBarTitleText: '详情',
+    navigationBarTextStyle: 'white',
+    backgroundTextStyle: 'dark',
+    navigationBarBackgroundColor: '#094baa'
+  };
+  data = {
+      nodeData:null,
+  };
+  methods = {};
+  onLoad() {
+      this.nodeData = wepy.$instance.data.document;
+  };
+  onUnload() {
+      wepy.$instance.data.document = null;
+  };
+}
+</script>

@@ -26,12 +26,12 @@
 <template>
     <view class="container">
         <view class="guohui">
-            <image src='../res/ic_guohui.png' mode='aspectFill' style="width:120rpx;height:120rpx;"></image>
+            <image src='../res/icon.jpg' mode='aspectFill' style="width:120rpx;height:120rpx;"></image>
             <text style="font-size:38rpx;font-weight:bold;margin-top:20rpx;">云政法</text>
-            <text style="margin-top:20rpx;text-indent:80rpx;line-height:50rpx;font-size:32rpx">为维护公众利益和国家利益为目的，宣扬国家和地方的法律法规，本小程序为广大人民群众提供了扫黑除恶举报平台。广大人民群众通过该软件进行违法举报，更便于政法人员进行执法，同时便于信息的收集，为相关的执法部门或管理部门提供更加详实的利于办案和解决问题的资料和信息。</text>
+            <text style="margin-top:20rpx;text-indent:65rpx;line-height:50rpx;font-size:32rpx">积极回应人民对政法工作的新期待，主动拥抱现代科技，构建起从宣传到引导、从互动到服务的“互联网+政法服务”新媒体平台，并借此来加强社会沟通，接受社会监督，凝聚社会共识，从而更好地推动政法工作专业化、现代化、智能化。</text>
         </view>
-        <view class="menu">联系电话：0931-8482771</view>
-        <view class="menu">服务地址：甘肃省兰州市城关区滨河东路589号</view>
+        <view style="margin-top:100rpx;text-align:center;color:#515151;font-size:30rpx">中共兰州市委政法委员会版权所有</view>
+        <text decode='true' style="margin-top:20rpx;text-align:center;color:#515151;font-size:30rpx">2019 All Rights Reserved.</text>
     </view>
 </template>
 <script>

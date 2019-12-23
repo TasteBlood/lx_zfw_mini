@@ -1,7 +1,9 @@
-APP_ID: wxc794e10711a99f9b
-APP_SECRET: a8588f883849e5fce6fb39d17e599c14
-AK: 6GWBZ-R3MWU-E72VP-BFPNG-TSFMO-CCBB2
-SIGN: uRpgvFWuquCfkU1VLDMgUikmkYbpSGS
+APP_ID: wx8a167dacb239faa4
+APP_SECRET:b4fc55718057cd38d91196073876850a
+AK: 73OBZ-LS66I-XWYG7-5TUZZ-TQU53-WVBSF
+SIGN: LDmoLTcOLmSI6Pp2mIPvwdJnPj3ICtzo
 
-username: shennongshizu@163.com
-password: Hello1234
+username: syp13919311704@sina.com
+password: xjk8425529
+
+云政法是兰州市委政法委提供的向广大市民宣传扫黑除恶法律法规以及维护社会稳定信息的平台。

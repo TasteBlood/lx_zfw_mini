@@ -127,7 +127,7 @@ export default class SaoheiCaseToLaw extends wepy.page {
     });
     this.load = false;
     wepy.stopPullDownRefresh();
-    if (page === 1) {
+    if (res.info.totalpage === 1) {
       this.items = res.info.records;
       this.noMore = false;
     } else {

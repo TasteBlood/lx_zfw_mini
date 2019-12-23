@@ -14,6 +14,10 @@ swiper {
   height: 300rpx !important;
 }
 
+swiper-item{
+  // height: 200rpx !important;
+}
+
 .list {
   margin-top: 20rpx;
   margin-left: 20rpx;
@@ -32,7 +36,7 @@ swiper {
 }
 
 .title {
-  color: #f02e28;
+  color: #515151;
 }
 
 .content {
@@ -98,15 +102,44 @@ swiper {
 .btn-sign:active {
   background-color: rgb(182, 29, 24);
 }
+.video-item {
+  padding: 20rpx;
+  background-color: white;
+  border-radius: 10rpx;
+  position: relative;
+  margin-bottom: 20rpx;
+  box-shadow: 0rpx 2rpx 10rpx 4rpx #e1e1e1;
+  .pic {
+    width: 100%;
+    height: 340rpx;
+  }
+
+  .play-pic {
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    width: 100rpx;
+    height: 100rpx;
+    margin: auto;
+  }
+  .title {
+    text-align: center;
+    margin-top: 10rpx;
+    color: #f02e28;
+    font-size: 32rpx;
+  }
+}
 </style>
 <template>
     <view class="container">
         <view class="top-pic">
-          <swiper previous-margin='10rpx' next-margin='200rpx' class="left-view" autoplay circular interval='2000' vertical='true'>
+          <swiper display-multiple-items='3' previous-margin='20rpx' class="left-view" autoplay circular interval='2000' vertical='true'>
               <block wx:for="{{signs}}" wx:key="{{index}}">
                   <swiper-item>
                     <view style="display:flex;flex-direction:row;align-items:flex-end;">
-                      <text>{{item.name}}<text style="color:#717171;font-size:26rpx;"> 参与签字</text></text>
+                      <text style='font-size:30rpx;'>{{item.name}}<text style="color:#717171;font-size:26rpx;"> 参与签字</text></text>
                     </view>
                   </swiper-item>
               </block>
@@ -118,12 +151,17 @@ swiper {
         </view>
         <view class="list">
             <block wx:for="{{items}}" wx:key="{{index}}">
-                <view class="item" @tap='onItemClick' data-item='{{item}}'>
+                <view class="item" @tap='onItemClick' wx:if='{{item.type===1}}' data-item='{{item}}'>
                     <view class="content">
                         <text class="title multi-line">{{item.title}}</text>
                         <!-- <rich-text nodes='{{item.preContent}}' class="multi-line" style="font-size:30rpx;color:#0D0D0D;margin-top:10rpx;"></rich-text> -->
                     </view>
                     <image mode='aspectFill' style="width:220rpx;height:160rpx;" src="{{item.img?item.img:defaultImg}}"></image>
+                </view>
+                <view class="video-item" wx:elif="{{item.type===2}}">
+                    <image src='http://qn-zfw.yungoux.com/1571725703830.png' class="pic" mode='asceptFill'></image>
+                    <image @tap='onItemClick' data-item='{{item}}' src='../res/play.png' class="play-pic" style="width:100rpx;height:100rpx;"></image>
+                    <view class="title">{{item.title}}</view>
                 </view>
             </block>
         </view>
@@ -163,7 +201,7 @@ export default class Law extends wepy.page {
     signs:[],
     currentContent: null,
     user: null,
-    defaultImg:'http://qn-zfw.yungoux.com/1571653491331.png'
+    defaultImg:'http://qn-zfw.yungoux.com/1571901251655.jpg'
   };
   methods = {
     catchtouchmove(){
@@ -173,12 +211,20 @@ export default class Law extends wepy.page {
       this.showModal = false;
     },
     onItemClick(e) {
-      this.currentContent = e.currentTarget.dataset.item.content;
-      this.currentContent = this.currentContent.replace(
-        '<img',
-        '<img style="width:80%" '
-      );
-      this.showModal = true;
+      if (e.currentTarget.dataset.item.type === 1) {
+        this.currentContent = e.currentTarget.dataset.item.content;
+        this.currentContent = this.currentContent.replace(
+          '<img',
+          '<img style="width:80%" '
+        );
+        //this.showModal = true;
+        wepy.$instance.data.document = this.currentContent;
+        wepy.navigateTo({ url: './detail' });
+      } else if (e.currentTarget.dataset.item.type === 2) {
+        wepy.$instance.data.video = e.currentTarget.dataset.item.content.split(';');
+        wepy.navigateTo({ url: './play' });
+      }
+      
     },
     signClick() {
       if (this.user) {
@@ -211,16 +257,25 @@ export default class Law extends wepy.page {
     });
     this.load = false;
     wepy.stopPullDownRefresh();
-    if (page === 1) {
+    if (res.info.totalpage === 1) {
       this.items = res.info.records;
-      this.noMore = false;
     } else {
-      this.items.concat(res.info.records);
-      if (res.info.totalpage === page) {
-        this.noMore = true;
-      } else {
-        this.noMore = false;
-        this.page++;
+      if (page === 1) {
+        this.items = res.info.records;
+        if (res.info.totalpage === page) {
+          this.noMore = true;
+        } else {
+          this.noMore = false;
+          this.page++;
+        }
+      }else{
+        this.items = this.items.concat(res.info.records);
+        if (res.info.totalpage === page) {
+          this.noMore = true;
+        } else {
+          this.noMore = false;
+          this.page++;
+        }
       }
     }
     this.$apply();

@@ -6,11 +6,11 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  overflow-y: scroll;
+  // overflow-y: scroll;
 }
 
 .swiper {
-  height: 360rpx;
+  height: 35%;
 }
 
 .title {
@@ -46,7 +46,13 @@
 .menu-panel {
   margin-left: 60rpx;
   margin-right: 60rpx;
-  margin-top: 20rpx;
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
+  box-sizing: border-box;
+  height: 65%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .menu-line {
@@ -58,6 +64,7 @@
   justify-content: space-between;
   border-radius: 10rpx;
   box-sizing: border-box;
+  height: 18%;
 }
 .menu-line:active {
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
@@ -69,8 +76,8 @@
 }
 
 .pic {
-  width: 60%;
-  height: 130rpx;
+  width: 70%;
+  height: 100%;
 }
 .content {
   width: 40%;
@@ -82,15 +89,15 @@
 </style>
 <template>
   <view class="container">
-    <view class="status-bar" style="height:{{top}}px"></view>
-    <swiper indicator-dots autoplay circular class="swiper">
+    <!-- <view class="status-bar" style="height:{{top}}px"></view> -->
+    <swiper autoplay circular class="swiper">
       <block wx:for="{{items}}" wx:key="{{index}}">
         <swiper-item>
-          <image mode="aspectFill" src="{{item.src}}" style="width:100%;height:100%;" />
+          <image mode="asceptFill" src="{{item.src}}" style="width:100%;height:100%;" />
         </swiper-item>
       </block>
     </swiper>
-    <view class="title" style="margin-top:{{top}}px;">云政法</view>
+    <!-- <view class="title" style="margin-top:{{top}}px;">云政法</view> -->
     <view class="top-menu" wx:if="{{1===2}}">
       <view class="menu-left" @tap="skipTo" data-type="score">
         <image class="icon-36" src="../res/ic_score.png" mode="aspectFill" />
@@ -103,24 +110,24 @@
     </view>
     <view class="menu-panel">
       <view class="menu-line" @tap="skipTo" data-type="law" style="margin-bottom:{{bottom}}px">
-        <view class="content">政策法规</view>
-        <image src="http://qn-zfw.yungoux.com/1570585283440.png" mode="aspectFill" class="pic" />
+        <view class="content">法规条例</view>
+        <image src="http://qn-zfw.yungoux.com/1571987680802.png" mode="widthFit" class="pic" />
       </view>
       <view class="menu-line" @tap="skipTo" data-type="shiyu" style="margin-bottom:{{bottom}}px"> 
         <view class="content">市域治理</view>
-        <image src="http://qn-zfw.yungoux.com/1570585258778.png" mode="aspectFill" class="pic" />
+        <image src="http://qn-zfw.yungoux.com/1571913408600.png" mode="widthFit" class="pic" />
       </view>
       <view class="menu-line" @tap="skipTo" data-type="weiweng" style="margin-bottom:{{bottom}}px">
         <view class="content">维护稳定</view>
-        <image src="http://qn-zfw.yungoux.com/1570585626267.png" mode="aspectFill" class="pic" />
+        <image src="http://qn-zfw.yungoux.com/1571913434247.png" mode="widthFit" class="pic" />
       </view>
       <view class="menu-line" @tap="skipTo" data-type="xiejiao" style="margin-bottom:{{bottom}}px">
         <view class="content">反邪防邪</view>
-        <image src="http://qn-zfw.yungoux.com/1570585206689.png" mode="aspectFill" class="pic" />
+        <image src="http://qn-zfw.yungoux.com/1571913457351.png" mode="widthFit" class="pic" />
       </view>
       <view class="menu-line" style="margin-bottom:{{bottom}}px" @tap="skipTo" data-type="saohei">
         <view class="content">扫黑除恶</view>
-        <image src="http://qn-zfw.yungoux.com/1570585235103.png" mode="aspectFill" class="pic" />
+        <image src="http://qn-zfw.yungoux.com/1571913473657.png" mode="widthFit" class="pic" />
       </view>
     </view>
   </view>
@@ -141,13 +148,13 @@ export default class Index extends wepy.page {
     height:0,
     items: [
       {
-        src: 'http://qn-zfw.yungoux.com/1571215778325.png'
+        src: 'http://qn-zfw.yungoux.com/1571905204296.png'
       },
       {
-        src: 'http://qn-zfw.yungoux.com/1571215812849.png'
+        src: 'http://qn-zfw.yungoux.com/1571905236217.png'
       },
       {
-        src: 'http://qn-zfw.yungoux.com/1571215832870.png'
+        src: 'http://qn-zfw.yungoux.com/1572242194001.png'
       }
     ],
     bottom:0
@@ -202,7 +209,7 @@ export default class Index extends wepy.page {
           wepy.navigateTo({ url: './xiejiao' });
           break;  
         case 'saohei':
-          wepy.navigateTo({ url: './saohei_index' });
+          wepy.switchTab({ url: './saohei_index_main' });
           break;
       }
     }
@@ -213,26 +220,6 @@ export default class Index extends wepy.page {
       success: res => {
         //console.log(res);
         this.top = res.statusBarHeight;
-
-
-        wx.createSelectorQuery().select('.swiper').boundingClientRect().exec(swiperRes=>{
-      //console.log(swiperRes[0].height,'swiper');
-        
-        wx.createSelectorQuery().select('.menu-line').boundingClientRect().exec(lineRes=>{
-          //console.log(lineRes[0].height,'line');
-
-          wx.createSelectorQuery().select('.status-bar').boundingClientRect().exec(statusRes=>{
-            //动态计算底部距离，平均分布菜单
-          let bottom = res.windowHeight - swiperRes[0].height - statusRes[0].height - lineRes[0].height*5;
-          //console.log(bottom);
-          this.bottom = bottom/5;
-          this.$apply();
-
-
-          });
-        });
-
-    });
       }
     });
     

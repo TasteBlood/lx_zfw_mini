@@ -1,32 +1,62 @@
 <style lang="less" scoped>
-    view{
-        line-height: 60rpx;
-    }
-    .container{
-        padding: 40rpx;
-    }
-    .btn-confirm{
-        width: 100%;
-        height: 100rpx;
-        color:white;
-        background-color: #094baa;
-        line-height: 100rpx;
-        text-align: center;
-        position: fixed;
-        bottom: 0;
-        left:0;
-    }
-    .btn-confirm:active{
-        background-color: #073c85;
-    }
+.container {
+  padding: 20rpx;
+  overflow-y: scroll;
+  position: absolute;
+  left:0;
+  top:0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+.btn-confirm {
+  width: 100%;
+  height: 100rpx;
+  color: white;
+  background-color: #094baa;
+  line-height: 100rpx;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+.btn-confirm:active {
+  background-color: #073c85;
+}
+
+.title {
+  font-size: 32rpx;
+  color: #094baa;
+  border-bottom: 2rpx solid #d1d1d1;
+  text-align: center;
+}
+
+.line {
+  font-size: 30rpx;
+  color: #515151;
+  margin-top: 10rpx;
+}
 </style>
 <template>
     <view class="container">
-        <view style="text-align:center">扫黑除恶举报须知</view>
-        <view>一、内容真实，准确无误；</view>
-        <view>二、违法乱纪，危害社会；</view>
-        <view>三、恶黑团伙，聚众闹事；</view>
-        <view class="btn-confirm" @tap='confirm'>同 意</view>
+        <view class="title">举报须知</view>
+        <view style="display:flex;flex-direction:column;">
+            <text class="line">一、本平台受理涉黑涉恶违法犯罪线索举报。如举报其他方面的问题，请直接向有关部门反映。</text>
+            <text class="line">二、举报人应当如实反映情况，对所举报内容的真实性负责。接受询问、配合调查时，应如实提供情况和证据。对于捏造事实、诬告陷害行为的，将依照有关规定严肃处理；涉嫌违法犯罪的，将依法处理。</text>
+            <text class="line">三、提倡实名举报（请填写真实姓名、身份信息以及准确联系方式等内容），本平台将严格依法为举报人保密。</text>
+            <text class="line">四、为保障举报人的合法权益，限制恶意重复举报和垃圾信息。为提高平台的运行效率，请不要重复提交举报。</text>
+            <text class="line">五、请按页面提示填选举报信息，如不了解相关内容请填选“不清楚”。</text>
+        </view>
+        <view class="title" style="margin-top:20rpx;">相关规定</view>
+        <view style="display:flex;flex-direction:column;margin-bottom:120rpx;">
+            <text class="line">一、黑社会性质的组织应当同时具备以下特征：</text>
+            <text class="line">（一）形成较稳定的犯罪组织，人数较多，有明确的组织者、领导者，骨干成员基本固定；</text>
+            <text class="line">（二）有组织地通过违法犯罪活动或者其他手段获取经济利益，具有一定的经济实力，以支持该组织的活动；</text>
+            <text class="line">（三）以暴力、威胁或者其他手段，有组织地多次进行违法犯罪活动，为非作恶，欺压、残害群众；</text>
+            <text class="line">（四）通过实施违法犯罪活动，或者利用国家工作人员的包庇或者纵容，称霸一方，在一定区域或者行业内，形成非法控制或者重大影响，严重破坏经济、社会生活秩序。</text>
+            <text class="line">二、恶势力是指经常纠集在一起，以暴力、威胁或者其他手段，在一定区域或者行业内多次实施违法犯罪活动，为非作恶，欺压百姓，扰乱经济、社会生活秩序，造成较为恶劣的社会影响，但尚未形成黑社会性质组织的违法犯罪团伙。恶势力一般为三人以上，纠集者相对固定，违法犯罪活动主要为强迫交易、故意伤害、非法拘禁、敲诈勒索、故意毁坏财物、聚众斗殴、寻衅滋事等，同时还可能伴随实施开设赌场、组织妇女卖淫、强迫妇女卖淫、贩卖毒品、运输毒品、制造毒品、抢劫、抢夺、聚众扰乱社会秩序、聚众扰乱公共场所秩序、交通秩序以及聚众“打砸抢”等。</text>
+        </view>
+        <view class="btn-confirm" @tap='confirm'>{{title}}</view>
     </view>
 </template>
 <script>
@@ -35,15 +65,39 @@ export default class SaoHeiComfirm extends wepy.page {
   config = {
     navigationBarTitleText: '举报须知',
     navigationBarBackgroundColor: '#094baa',
-    navigationBarTextStyle: 'white'
+    navigationBarTextStyle: 'white',
+    disableScroll:true
   };
-  data = {};
+  data = {
+    title: '倒计时20秒',
+    enable: false,
+    timerId: 0
+  };
   methods = {
-      confirm(){
-          wx.redirectTo({
-              url: './saohei_jubao'
-          })
-      }
+    confirm() {
+      if (!this.enable) return;
+      wx.redirectTo({
+        url: './saohei_jubao'
+      });
+    }
   };
+
+  onLoad() {
+    let time = 20;
+    let self = this;
+    self.timerId = setInterval(() => {
+      time--;
+      self.title = `倒计时${time}秒`;
+      if (time <= 0) {
+        self.enable = true;
+        self.title = '我要举报';
+        clearInterval(self.timerId);
+      }
+      self.$apply();
+    }, 1000);
+  }
+  onUnload() {
+    clearInterval(this.timerId);
+  }
 }
 </script>

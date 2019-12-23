@@ -76,16 +76,25 @@ export default class TSXC extends wepy.page {
     let res = await getBlacks(page, size, 2);
     this.load  = false;
     wepy.stopPullDownRefresh();
-    if (page === 1) {
+    if (res.info.totalpage === 1) {
       this.items = res.info.records;
-      this.noMore = false;
     } else {
-      this.items.concat(res.info.records);
-      if (res.info.totalpage === page) {
-        this.noMore = true;
-      } else {
-        this.noMore = false;
-        this.page++;
+      if (page === 1) {
+        this.items = res.info.records;
+        if (res.info.totalpage === page) {
+          this.noMore = true;
+        } else {
+          this.noMore = false;
+          this.page++;
+        }
+      }else{
+        this.items = this.items.concat(res.info.records);
+        if (res.info.totalpage === page) {
+          this.noMore = true;
+        } else {
+          this.noMore = false;
+          this.page++;
+        }
       }
     }
     this.$apply();

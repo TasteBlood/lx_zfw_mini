@@ -52,13 +52,16 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
+      'pages/xiejiao',
+      'pages/saohei_confirm',
+      'pages/detail',
       'pages/tsxc',
       'pages/play',
       
       'pages/saohei_case_to_law',
       'pages/saohei_knowlage',
       'pages/jubao_feedback',
-      'pages/xiejiao',
+      
 
       'pages/jiangli',
       'pages/score_consum',
@@ -72,7 +75,7 @@ export default class extends wepy.app {
       'pages/jubao_detail',
       'pages/saohei_index',
       'pages/saohei_index_main',
-      'pages/saohei_confirm',
+      
       'pages/saohei_jubao',
       'pages/location',
       'pages/score_note',

@@ -81,18 +81,27 @@ export default class JubaoRecord extends wepy.page {
           //console.log(res);
           wx.stopPullDownRefresh();
           this.load = false;
-          if(page===1){
-              this.items = res.info.records;
-              this.noMore = false;
-          }else{
-              this.items.concat(res.info.records);
-              if(res.info.totalpage===page){
-                  this.noMore = true;
-              }else{
-                  this.noMore = false;
-                  this.page ++;
-              }
-          }
+          if (res.info.totalpage === 1) {
+      this.items = res.info.records;
+    } else {
+      if (page === 1) {
+        this.items = res.info.records;
+        if (res.info.totalpage === page) {
+          this.noMore = true;
+        } else {
+          this.noMore = false;
+          this.page++;
+        }
+      }else{
+        this.items = this.items.concat(res.info.records);
+        if (res.info.totalpage === page) {
+          this.noMore = true;
+        } else {
+          this.noMore = false;
+          this.page++;
+        }
+      }
+    }
           this.$apply();
 
     }

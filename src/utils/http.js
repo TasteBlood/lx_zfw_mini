@@ -1,5 +1,5 @@
-const BASE_URL = "http://192.168.31.160:8086";
-// const BASE_URL = "https://zfw-service.yungoux.com";
+// const BASE_URL = "http://192.168.31.160:8086";
+const BASE_URL = "https://zfw-service.yungoux.com";
 
 
 // get request 
